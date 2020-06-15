@@ -9,4 +9,4 @@ def chloe_says():
 	pass # chloe - pull and fill this in!
 
 def catherine_says():
-	pass # catherine - pull and fill this in!
+        print("vim is hard, that's what she said")
