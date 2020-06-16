@@ -1,0 +1,11 @@
+name: spectral
+dependencies:
+  - notebook
+  - jupyterhub
+  - jupyterlab
+  - matplotlib
+  - scipy
+  - networkx
+  - pillow
+  - conda-forge::tqdm
+  - conda-forge::beautifulsoup4
