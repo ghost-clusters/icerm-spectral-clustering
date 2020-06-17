@@ -11,7 +11,7 @@ def kmeans(data, k, iters=100):
 	d, n = data.shape
 
 	# randomly guess initial clusters
-	assns = np.random.choice(range(k), size=(n,))
+	assns = np.random.choice(range(k), size=(n,)).astype(np.int)
 	centroids = np.random.normal(scale=np.var(data), size=(d, k))
 
 	def new_assns(assns, centroids):
