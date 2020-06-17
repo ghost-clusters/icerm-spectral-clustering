@@ -22,8 +22,6 @@ datapoints = np.hstack(datapoints) #concatenates datapoints into single 2d matri
 
 centroids = np.random.normal(loc=0, scale=10, size=(d,k))
 
-cluster_ass = np.zeros(k*n, dtype=np.int)
-
 
 def update_assignments():
     for j in range(n):
@@ -38,28 +36,29 @@ def update_assignments():
 
         cluster_ass[j] = closest_cent_indx
 
-def update_assignments_2():
-    global cluster_ass
+def update_assignments_2(assignment):
     '''
     Given: list of clusters ([integer for each datapoint])
     Given: list of datapoints
     Want: dist(centroid, datapoint) for each centroid and datapoint
     '''
-    cluster_ass = np.argmin(np.vstack([
+    assignment = np.argmin(np.vstack([
 	    np.linalg.norm(datapoints - centroids[:, i].reshape((-1, 1)), axis=0)
         for i in range(k)
     ]), axis = 0)
+    return assignment
 
-def update_centroids():
+def update_centroids(assignment):
     for l in range(k):
-        nnz = np.sum(cluster_ass == l)
-        if ( np.sum(cluster_ass==l) > 0 ):
-            centroids[:,l] = np.mean(datapoints[:, (cluster_ass==l)], axis=1)
+        nnz = np.sum(assignment == l)
+        if ( np.sum(assignment==l) > 0 ):
+            centroids[:,l] = np.mean(datapoints[:, (assignment==l)], axis=1)
 
 def kmeans():
+    assignment = np.zeros(k*n, dtype=np.int)
     for y in range(iters):
-        update_assignments_2()
-        update_centroids()
+        assignment = update_assignments_2(np.zeros(k*n, dtype=np.int))
+        update_centroids(assignment)
     plt.scatter(*datapoints)
     plt.scatter(*centroids)
     plt.show()
