@@ -3,6 +3,8 @@ import scipy as sp
 import networkx as nx
 from Kmeans import kmeans
 from scipy import linalg
+import matplotlib.pyplot as plt
+
 def unnormalized_spectral_clustering(data, k): # data is a list of points in R_2
 	# 1. construct similarity
 	# 2. construct laplacian
@@ -13,6 +15,8 @@ def unnormalized_spectral_clustering(data, k): # data is a list of points in R_2
 	# 7. output cluster
 	laplacian = laplacian_matrix(data)
 	u_first_k_evectors = sp.linalg.eigh(laplacian, eigvals=(0, k-1))[1]
+	print("here")
+	make_plot(u_first_k_evectors)
 	for i in range(len(data)):
 		#convert arrays to points
 		u_first_k_evectors[i]
@@ -40,5 +44,12 @@ def similarity_matrix(data):
 		for j in range(len(data)):
 			similarity_matrix[i][j] = float(np.linalg.norm(data[i] - data[j]))
 	return similarity_matrix
+
+def make_plot(matrix):
+	newmatrix = np.transpose(matrix)
+	x = newmatrix[0]
+	y = newmatrix[1]
+	plt.plot(x,y,'ro')
+	plt.show()
 
 unnormalized_spectral_clustering(gen_random_points(4, 2), 2)
