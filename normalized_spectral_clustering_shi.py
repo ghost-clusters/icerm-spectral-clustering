@@ -14,7 +14,7 @@ def normalized_spectral_clustering_shi(data, k): # data is a list of points in R
     # 6. apply k means
     # 7. output cluster
     laplacian, degreeinv = laplacian_matrix(data)
-    dinvl = np.dot(degreeinv, laplacian)
+    dinvl = degreeinv @ laplacian
     u_first_k_evectors = sp.linalg.eigh(dinvl, eigvals=(0, k-1))[1]
     #make_plot(u_first_k_evectors)
     # for i in range(len(data)):
