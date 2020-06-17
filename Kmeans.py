@@ -1,57 +1,54 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from tqdm import tqdm
-d = 2 #d for dimensionality
-k = 4 #k for klusters
-itera = 10000 #i for iterations
-n = 100 # n for number (of pts)
-
-x_list = np.random.normal(loc=0,scale= 15, size=(d, k))
+from datasets import gaussian_mixture
 
 
-datapoints = []
-for i in range(k):
-    datapoints.append(np.random.normal(loc=0, scale=1, size=(d, n)) + x_list[:,i].reshape((-1,1)))
+def kmeans(data, k, iters=100):
+	'''
+	data: np.ndarray - a [d, n] numpy array of n unique d-dimensional datapoints
+	k: integer - number of clusters to compute
+	'''
+	d, n = data.shape
 
-datapoints = np.hstack(datapoints) #concatenates datapoints into single 2d matrix
+	# randomly guess initial clusters
+	assns = np.random.choice(range(k), size=(n,))
+	centroids = np.random.normal(scale=np.var(data), size=(d, k))
 
-#print(np.shape(datapoints))
+	def new_assns(assns, centroids):
+		# List of [norm(data_vector[i], centroid[j]) for j=1..k]
+		dists_per_centroid = [
+				np.linalg.norm(data - centroids[:, i].reshape((-1, 1)), axis=0)
+				for i in range(k)
+			]
+		# find index of the nearest centroid for each point
+		# (argmin returns the *index* of the minimum item, rather than the item itself)
+		return np.argmin(np.vstack(dists_per_centroid), axis=0)
 
-#plt.scatter( datapoints[0, :], datapoints[1, :] )
-#plt.show()
+	def new_centroids(assns, centroids):
+		# for j=1..k, find all data columns matching this assignment, then average the cols
+		candidate_centroids = []
+		for i in range(k):
+			v = np.sum(assns == i)
+			if(np.sum(assns == i) > 0):
+				candidate_centroids.append(np.mean(data[:, assns==i], axis=1).reshape((-1, 1)))
+			else:
+				candidate_centroids.append(centroids[:, i].reshape((-1, 1)))
+		return np.hstack(candidate_centroids)
 
-centroids = np.random.normal(loc=0, size=(d,k))
+	for _ in range(iters):
+		centroids = new_centroids(assns, centroids)
+		assns = new_assns(assns, centroids)
+	return centroids, assns
 
-cluster_ass= np.zeros(k*n, dtype=np.int)
+if __name__ == "__main__":
+	d = 2
+	n = 100
+	k = 4
 
+	data = gaussian_mixture(k, n, d)
+	centroids, assns = kmeans(data, k)
 
-def update_assignments():
-    for j in range(n):
-        u = datapoints[:,j]
-        closest_cent_indx = -1
-        valu = np.inf
-        for l in range(k):
-            v = centroids[:,l]
-            if(np.sqrt(np.sum((u-v)**2))) < valu:
-                valu = np.sqrt(np.sum((u-v)**2))
-                closest_cent_indx = l
+	plt.scatter(*data)
+	plt.scatter(*centroids)
+	plt.show()
 
-        cluster_ass[j] = closest_cent_indx
-
-def update_centroids():
-    for l in range(k):
-        if ( np.sum(cluster_ass==l) > 0 ):
-            centroids[:,l] = np.mean(datapoints[:, (cluster_ass==l)], axis=1)
-        
-
-
-def kmeans():
-    for y in tqdm(range(itera)):
-        update_assignments()
-        update_centroids()
-kmeans()
-
-plt.scatter(*datapoints)
-print(centroids)
-plt.scatter(*centroids)
-plt.show()
