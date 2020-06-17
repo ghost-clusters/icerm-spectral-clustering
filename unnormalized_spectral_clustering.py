@@ -1,6 +1,7 @@
 import numpy as np
 import scipy as sp
 import networkx as nx
+from Kmeans import kmeans
 from scipy import linalg
 def unnormalized_spectral_clustering(data, k): # data is a list of points in R_2
 	# 1. construct similarity
@@ -16,7 +17,7 @@ def unnormalized_spectral_clustering(data, k): # data is a list of points in R_2
 		#convert arrays to points
 		u_first_k_evectors[i]
 
-	kmeansmaxshubham()
+	clusters, assns = kmeans(u_first_k_evectors, k)
 
 def gen_random_points(number, length):
 	l = []
