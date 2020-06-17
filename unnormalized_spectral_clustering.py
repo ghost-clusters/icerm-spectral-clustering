@@ -16,11 +16,13 @@ def unnormalized_spectral_clustering(data, k): # data is a list of points in R_2
 	laplacian = laplacian_matrix(data)
 	u_first_k_evectors = sp.linalg.eigh(laplacian, eigvals=(0, k-1))[1]
 	#make_plot(u_first_k_evectors)
-	for i in range(len(data)):
-		#convert arrays to points
-		u_first_k_evectors[i]
-	clusters, assns = kmeans(u_first_k_evectors, k)
-	make_plot(clusters)
+	# for i in range(len(data)):
+	# 	#convert arrays to points
+	# 	u_first_k_evectors[i]
+	U = u_first_k_evectors.T
+	clusters, assns = kmeans(U, k)
+	make_plot(data,assns,k)
+	plt.show()
 
 def gen_random_points(number, length):
 	l = []
@@ -41,16 +43,14 @@ def similarity_matrix(data):
 	similarity_matrix = np.zeros((len(data), len(data)))
 	for i in range(len(data)):
 		for j in range(len(data)):
-			similarity_matrix[i][j] = float(np.linalg.norm(data[i] - data[j]))
+			similarity_matrix[i][j] = np.exp(-np.linalg.norm(data[i] - data[j]))
 	return similarity_matrix
 
-def make_plot(matrix):
-	newmatrix = np.transpose(matrix)
-	x = newmatrix[0]
-	y = newmatrix[1]
-	print("X: ", x)
-	print("Y: ", y)
-	plt.plot(x,y,'ro')
-	plt.show()
-
-unnormalized_spectral_clustering(gen_random_points(50, 10), 2)
+def make_plot(data,assignment,k):
+	for i in range(k):
+		d = data[assignment == i].T
+		x = d[0]
+		y = d[1]	
+		plt.scatter(x,y)
+	
+unnormalized_spectral_clustering(np.random.normal(size=(50, 2)), 2)
