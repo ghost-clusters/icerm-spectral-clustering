@@ -20,8 +20,9 @@ def unnormalized_spectral_clustering(data, k): # data is a list of points in R_2
 	for i in range(len(data)):
 		#convert arrays to points
 		u_first_k_evectors[i]
-
 	clusters, assns = kmeans(u_first_k_evectors, k)
+	fhejfiajiejfwoife
+	return 
 
 def gen_random_points(number, length):
 	l = []
