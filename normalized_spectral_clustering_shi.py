@@ -55,5 +55,13 @@ def make_plot(data,assignment,k):
 		x = d[0]
 		y = d[1]	
 		plt.scatter(x,y)
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
+    # for i in range(k):
+    #     d = data[assignment == i].T
+    #     x = d[0]
+    #     y = d[1]
+    #     z = d[2]
+    #     ax.scatter(x,y,z)
 	
 normalized_spectral_clustering_shi(np.random.normal(size=(50, 2)), 2)
