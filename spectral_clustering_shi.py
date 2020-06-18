@@ -69,16 +69,16 @@ def spectral_clustering(data, k, lform):
 
 #plot for first 2 dimensions of data
 def make_plot(k, data, assignments):
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection="3d")
+    #fig = plt.figure()
+    #ax = fig.add_subplot(111, projection="3d")
     for i in range(k):
         d=data[assignments==i].T
-        ax.scatter(d[0],d[1],d[2])
+        plt.scatter(d[0],d[1])
     plt.show()
 
 
 if __name__ == "__main__":
-    d = 3
+    d = 2
     n = 100
     k = 4
     data = np.random.normal(size=(n, d))
