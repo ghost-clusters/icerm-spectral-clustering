@@ -4,6 +4,7 @@ import networkx as nx
 from Kmeans import kmeans
 from scipy import linalg
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 def normalized_spectral_clustering_shi(data, k): # data is a list of points in R_2
     # 1. construct similarity
@@ -50,10 +51,18 @@ def similarity_matrix(data):
 	return similarity_matrix
 
 def make_plot(data,assignment,k):
-	for i in range(k):
-		d = data[assignment == i].T
-		x = d[0]
-		y = d[1]	
-		plt.scatter(x,y)
+	# for i in range(k):
+	# 	d = data[assignment == i].T
+	# 	x = d[0]
+	# 	y = d[1]	
+	# 	plt.scatter(x,y)
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    for i in range(k):
+        d = data[assignment == i].T
+        x = d[0]
+        y = d[1]
+        z = d[2]
+        ax.scatter(x,y,z)
 	
-normalized_spectral_clustering_shi(np.random.normal(size=(50, 2)), 2)
+normalized_spectral_clustering_shi(np.random.normal(size=(50, 3)), 2)

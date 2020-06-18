@@ -39,11 +39,7 @@ def spectral_clustering(data, k, lform):
             degree[i][i] = sum(similar[i]) 
             degreeinv[i][i] = 1/sum(similar[i]) 
         laplacian = degree - similar
-        return laplacian, degreeinv
-
-
-    
-        
+        return laplacian, degreeinv    
     
     #create clusters in terms of original data
     def reframe_clusters(data,assignment,k):
@@ -51,8 +47,6 @@ def spectral_clustering(data, k, lform):
         for i in range(k):
             d.append(data[assignment==i].T)
         return d
-            
-
 
     #Do the thing, c'mon!
     laplacian, dinv = laplacian_matrix(data)
@@ -76,7 +70,6 @@ def make_plot(k, data, assignments):
         d=data[assignments==i].T
         plt.scatter(d[0],d[1],d[2])
     plt.show()
-
 
 if __name__ == "__main__":
     d = 3
