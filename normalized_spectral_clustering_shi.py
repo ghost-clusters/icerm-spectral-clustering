@@ -66,4 +66,4 @@ def make_plot(data,assignment,k):
         ax.scatter(x,y,z)
 	
 if __name__ == "__main__":
-    normalized_spectral_clustering_shi(np.random.normal(size=(50, 3)), 2)
+    normalized_spectral_clustering_shi(np.random.normal(size=(50, 3)), 4)
