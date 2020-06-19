@@ -10,7 +10,7 @@ from mpl_toolkits.mplot3d import Axes3D
 
 def spectral_clustering(data, k, lform):
     '''
-    data: np.ndarray - [d,n] numpy array consisting of n d-valued points
+    data: np.ndarray - [n,d] numpy array consisting of n d-valued points
     k: integer - desired number of clusters
     lform: string - specifically one of ['classic','random walk'], allowing for use of different graph laplacians
 
@@ -20,7 +20,7 @@ def spectral_clustering(data, k, lform):
     if(not ((lform=="classic") or (lform=="random walk") or (lform=="symmetric"))):
         return "pick a laplacian of the form 'classic' or 'random walk' or 'symmetric'"
     
-    
+    n,d = data.shape
 
     #Do the thing, c'mon!
     def cluster(laplacian):
@@ -29,7 +29,7 @@ def spectral_clustering(data, k, lform):
         U = k_evectors.T
         if(lform=="symmetric"):
             rowsums = np.einsum('ij->i', U)
-            U = np.einsum('ij,kj->ikj', A, 1/rowsums)
+            U = np.einsum('ij,i->ij', U, 1/rowsums)
           
         _ , assns = kmeans(U, k)
         return assns
@@ -40,17 +40,14 @@ def spectral_clustering(data, k, lform):
 
     if(lform=="classic"):
         lapla = laplacian
-        assns = cluster(lapla)
     elif(lform=="random walk"):
         lapla =  dinv @ laplacian
-        assns = cluster(lapla)
     elif(lform=="symmetric"):
-        sqrtd = 1/np.sqrt(dinv)
-        sqrtdinv = np.sqt(dinv)
-
+        sqrtdinv = np.sqrt(dinv)
+        sqrtd = np.sqrt(np.linalg.inv(dinv))
+        lapla = sqrtdinv @ laplacian @ sqrtd
     
-    
-
+    assns = cluster(lapla)
     return assns
 
 #plot for first 2 dimensions of data
@@ -64,11 +61,11 @@ def make_plot(k, data, assignments):
 
 
 if __name__ == "__main__":
-    d = 3
-    n = 50
-    k = 4
-    data = gaussian_mixture(k, n, d, centroid_var= 10).T
-    assns = spectral_clustering(data, k, "classic")
+    d = 4
+    n = 42
+    k = 6
+    data = gaussian_mixture(k, n, d, centroid_var= 5).T
+    assns = spectral_clustering(data, k, "symmetric")
     make_plot(k, data, assns)
 
 
