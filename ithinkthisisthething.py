@@ -22,9 +22,14 @@ def normalized_spectral_clustering_shi(data, k): # data is a list of points in R
     # 	#convert arrays to points
     # 	u_first_k_evectors[i]
     U = u_first_k_evectors.T
-    clusters, assns = kmeans(U, k)
-    make_plot(data,assns,k)
-    plt.show()
+    idontneedthis, ineedthis = U.shape
+    for i in range(k):
+        please = U[i].T
+        pleasework = please.reshape((1,ineedthis))
+        clusters, assns = kmeans(pleasework, k)
+        print(assns)
+        make_plot(data,assns,k)
+        plt.show()
 
 def gen_random_points(number, length):
 	l = []
@@ -51,19 +56,19 @@ def similarity_matrix(data):
 	return similarity_matrix
 
 def make_plot(data,assignment,k):
-	# for i in range(k):
-	# 	d = data[assignment == i].T
-	# 	x = d[0]
-	# 	y = d[1]	
-	# 	plt.scatter(x,y)
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    for i in range(k):
-        d = data[assignment == i].T
-        x = d[0]
-        y = d[1]
-        z = d[2]
-        ax.scatter(x,y,z)
+	for i in range(k):
+		d = data[assignment == i].T
+		x = d[0]
+		y = d[1]	
+		plt.scatter(x,y)
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
+    # for i in range(k):
+    #     d = data[assignment == i].T
+    #     x = d[0]
+    #     y = d[1]
+    #     z = d[2]
+    #     ax.scatter(x,y,z)
 	
-if __name__ == "__main__":
-    normalized_spectral_clustering_shi(np.random.normal(size=(50, 3)), 4)
+data = np.random.normal(size=(100, 2))    
+normalized_spectral_clustering_shi(data, 2)

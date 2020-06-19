@@ -18,20 +18,20 @@ def load_karate_club():
     return nx.karate_club_graph()
 
 
-def gaussian_mixture(m, n, d, centroid_var=5, cluster_var=1):
+def gaussian_mixture(n_gaussians, n_pts, dim, centroid_var=5, cluster_var=1):
     '''
-    m: integer - number of gaussians to use in the GMM
-    n: integer - number of points to sample per gaussian
-    d: integer - dimensionality of points
+    n_gaussians: integer - number of gaussians to use in the GMM
+    n_pts: integer - number of points to sample per gaussian
+    dim: integer - dimensionality of points
     centroid_var: float - variance used to pick random means of each Gaussian
     cluster_var: float - variance used for each Gaussian of the mixture
     '''
-    centroids = np.random.normal(scale=centroid_var, size=(d, m))
+    centroids = np.random.normal(scale=centroid_var, size=(dim, n_gaussians))
 
     # for each gaussian, sample some points and add the centroid mean
     points_by_gaussian = [
-        np.random.normal(scale=cluster_var, size=(d, n)) + centroids[:, i].reshape((-1, 1))
-        for i in range(m)
+        np.random.normal(scale=cluster_var, size=(dim, n_pts)) + centroids[:, i].reshape((-1, 1))
+        for i in range(n_gaussians)
     ]
 
     # join each points as columns
