@@ -25,12 +25,17 @@ def spectral_clustering(data, k, lform):
     #Do the thing, c'mon!
     def cluster(laplacian):
         
-        k_evectors = sp.linalg.eigh(lapla, eigvals=(0, k-1))[1]
-        U = k_evectors.T
+        U = sp.linalg.eigh(lapla, eigvals=(0, k-1))[1]
         if(lform=="symmetric"):
-            rowsums = np.einsum('ij->i', U)
-            U = np.einsum('ij,i->ij', U, 1/rowsums)
-          
+            T = np.zeros(U.shape)
+            for i in range(len(U)):
+                T[i] = U[i]/np.linalg.norm(U[i])
+            print(T.shape)
+            U = T.T
+        else:
+            U = U.T
+        
+        print(U.shape)
         _ , assns = kmeans(U, k)
         return assns
 
@@ -61,11 +66,12 @@ def make_plot(k, data, assignments):
 
 
 if __name__ == "__main__":
-    d = 4
-    n = 42
-    k = 6
-    data = gaussian_mixture(k, n, d, centroid_var= 5).T
-    assns = spectral_clustering(data, k, "symmetric")
+    d = 3
+    n = 50
+    k = 4
+    data = gaussian_mixture(k, n, d, centroid_var= 10).T
+    assns = spectral_clustering(data, k, "random walk")
+
     make_plot(k, data, assns)
 
 
