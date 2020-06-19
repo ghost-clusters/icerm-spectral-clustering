@@ -16,7 +16,10 @@ def normalized_spectral_clustering_shi(data, k): # data is a list of points in R
     # 7. output cluster
     laplacian, degreeinv = laplacian_matrix(data)
     dinvl = degreeinv @ laplacian
-    u_first_k_evectors = sp.linalg.eigh(dinvl, eigvals=(0, k-1))[1]
+    evalu, u_first_k_evectors = np.linalg.eigh(dinvl)
+    evalu = evalu[:k]
+    u_first_k_evectors = u_first_k_evectors[:k]
+    print(evalu)
     #make_plot(u_first_k_evectors)
     # for i in range(len(data)):
     # 	#convert arrays to points
@@ -47,7 +50,7 @@ def similarity_matrix(data):
 	similarity_matrix = np.zeros((len(data), len(data)))
 	for i in range(len(data)):
 		for j in range(len(data)):
-			similarity_matrix[i][j] = np.exp(-np.linalg.norm(data[i] - data[j]))
+			similarity_matrix[i][j] = np.exp(-(np.linalg.norm(data[i] - data[j]**2)/2))
 	return similarity_matrix
 
 def make_plot(data,assignment,k):
