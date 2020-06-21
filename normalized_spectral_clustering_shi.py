@@ -15,8 +15,21 @@ def normalized_spectral_clustering_shi(data, k): # data is a list of points in R
     # 6. apply k means
     # 7. output cluster
     laplacian, degreeinv = laplacian_matrix(data)
-    dinvl = degreeinv @ laplacian
-    u_first_k_evectors = sp.linalg.eigh(dinvl, eigvals=(0, k-1))[1]
+    dinvl = np.dot(degreeinv, laplacian)
+    #computes all eigenvalue-vector pairs
+    evalues, u_first_k_evectors = np.linalg.eigh(dinvl)
+    evalues = evalues[:k]
+    u_first_k_evectors = u_first_k_evectors.T[:k].T
+    
+    # assert eigenvectors have norm 1
+#     test = u_first_k_evectors.T
+#     epsilon = 0.0001
+#     for i in range(len(test)):
+#         norm = np.linalg.norm(test[i])
+#         print("norm: ", norm)
+#         assert abs(norm - 1) < epsilon
+        
+    plot_evalues(evalues)
     #make_plot(u_first_k_evectors)
     # for i in range(len(data)):
     # 	#convert arrays to points
@@ -36,19 +49,24 @@ def gen_random_points(number, length):
 def laplacian_matrix(data):
     similar = similarity_matrix(data)
     degree = np.zeros((len(data), len(data)))
-    degreeinv = np.zeros((len(data), len(data)))
+    
     for i in range(len(data)):
         degree[i][i] = sum(similar[i]) 
-        degreeinv[i][i] = 1/sum(similar[i]) 
+    degreeinv = np.linalg.inv(degree)
     laplacian = degree - similar
+#     epsilon = 0.0001
+#     for i in range(len(laplacian)):
+#         assert abs(sum(laplacian[i])) < epsilon  
+    # assert that rows sum up to one.
     return laplacian, degreeinv
 
 def similarity_matrix(data):
-	similarity_matrix = np.zeros((len(data), len(data)))
-	for i in range(len(data)):
-		for j in range(len(data)):
-			similarity_matrix[i][j] = np.exp(-np.linalg.norm(data[i] - data[j]))
-	return similarity_matrix
+    similarity_matrix = np.zeros((len(data), len(data)))
+    for i in range(len(data)):
+        for j in range(len(data)):
+            similarity_matrix[i][j] = np.exp(-(np.linalg.norm(data[i] - data[j]) ** 2)/2)
+    print(similarity_matrix)
+    return similarity_matrix
 
 def make_plot(data,assignment,k):
 	# for i in range(k):
@@ -64,6 +82,11 @@ def make_plot(data,assignment,k):
         y = d[1]
         z = d[2]
         ax.scatter(x,y,z)
+        
+def plot_evalues(evalues):
+    print(evalues)
+    plt.plot(evalues)
+    plt.show()
 	
 if __name__ == "__main__":
-    normalized_spectral_clustering_shi(np.random.normal(size=(50, 3)), 4)
+    normalized_spectral_clustering_shi(np.random.normal(size=(10, 2)), 3)

@@ -15,6 +15,7 @@ def unnormalized_spectral_clustering(data, k): # data is a list of points in R_2
 	# 7. output cluster
 	laplacian = laplacian_matrix(data)
 	u_first_k_evectors = sp.linalg.eigh(laplacian, eigvals=(0, k-1))[1]
+	print(u_first_k_evectors)
 
 	#make_plot(u_first_k_evectors)
 	# for i in range(len(data)):
