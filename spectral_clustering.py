@@ -24,8 +24,7 @@ def spectral_clustering(data, k, lform):
 
     #Do the thing, c'mon!
     def cluster(laplacian):
-        
-        U = sp.linalg.eigh(lapla, eigvals=(0, k-1))[1]
+        U = sp.linalg.eigh(laplacian, eigvals=(0, k-1))[1]
         if(lform=="symmetric"):
             T = np.zeros(U.shape)
             for i in range(len(U)):
@@ -34,7 +33,6 @@ def spectral_clustering(data, k, lform):
             U = T.T
         else:
             U = U.T
-        
         print(U.shape)
         _ , assns = kmeans(U, k)
         return assns
