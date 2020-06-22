@@ -26,11 +26,7 @@ def kmeans(data, k, iters=100):
 			]
 		# find index of the nearest centroid for each point
 		# (argmin returns the *index* of the minimum item, rather than the item itself)
-<<<<<<< HEAD
-		return np.argmin(np.hstack(dists_per_centroid), axis=0)
-=======
 		return np.argmin(np.stack(dists_per_centroid, axis=0), axis=0)
->>>>>>> d75c6661af438fed8812621e4bb337009355f5bb
 
 	def new_centroids(assns, centroids):
 		# for j=1..k, find all data columns matching this assignment, then average the cols
@@ -62,8 +58,4 @@ class TestKMeans(unittest.TestCase):
 		
 if __name__ == "__main__":
 	# TODO: @shubham, test me!
-<<<<<<< HEAD
 	unittest.main()
-=======
-	pass
->>>>>>> d75c6661af438fed8812621e4bb337009355f5bb
