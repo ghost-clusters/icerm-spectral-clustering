@@ -63,20 +63,11 @@ def laplacian_matrix(data):
     return laplacian, degreeinv
 
 def similarity_matrix(data):
-<<<<<<< HEAD
-    similarity_matrix = np.zeros((len(data), len(data)))
-    for i in range(len(data)):
-        for j in range(len(data)):
-            similarity_matrix[i][j] = np.exp(-(np.linalg.norm(data[i] - data[j]) ** 2)/2)
-    print(similarity_matrix)
-    return similarity_matrix
-=======
 	similarity_matrix = np.zeros((len(data), len(data)))
 	for i in range(len(data)):
 		for j in range(len(data)):
 			similarity_matrix[i][j] = np.exp(-(np.linalg.norm(data[i] - data[j]**2)/2))
 	return similarity_matrix
->>>>>>> e95480cc1baddddd7607361cf093e0b0b4032b87
 
 def make_plot(data,assignment,k):
 	# for i in range(k):
