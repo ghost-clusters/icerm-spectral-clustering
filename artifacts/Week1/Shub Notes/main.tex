@@ -1,0 +1,128 @@
+\documentclass[letterpaper,12pt]{article}
+\usepackage{tabularx} % extra features for tabular environment
+\usepackage{amsmath}  % improve math presentation
+\usepackage{graphicx} % takes care of graphic including machinery
+\usepackage[margin=1in,letterpaper]{geometry} % decreases margins
+\usepackage{cite} % takes care of citations
+\usepackage[final]{hyperref} % adds hyper links inside the generated pdf file
+\usepackage{amssymb,amsmath,amsthm,amsfonts,mathtools}
+\hypersetup{
+	colorlinks=true,       % false: boxed links; true: colored links
+	linkcolor=blue,        % color of internal links
+	citecolor=blue,        % color of links to bibliography
+	filecolor=magenta,     % color of file links
+	urlcolor=blue         
+}
+\usepackage{blindtext}
+%++++++++++++++++++++++++++++++++++++++++
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\langlerangle}[1]{\langle{#1}\rangle}
+\newcommand{\linearoperator}[1]{\operatorname{\mathcal{L}}(#1)}
+\begin{document}
+
+\title{Graph Spectral Clustering}
+\author{Shubham Makharia \\shubham@brown.edu}
+\date{\today}
+\maketitle
+The Spectral Theorem is a result in linear algebra that unites the characteristic eigenvectors of a linear map with its matrix representation. Recognizing linear maps with eigenvectors formalizes the intuition of a linear map acting as "scalings and rotations of standard basis vectors," and the Spectral Theorem gives a condition on the matrix representation of linear maps that recovers this idea beautifully. Any linear operator with a symmetric matrix over an orthonormal basis can be constructed precisely as a rotation of standard basis vectors, and then an individual scaling of the vectors (or vice versa). 
+
+\section{Preliminaries}
+
+\noindent
+\textbf{Adjoint}
+
+\noindent
+Let $v \in V, w \in W$. $T \in \linearoperator{V,W}$ can be identified with its $\bf{adjoint}$, $T^* \in \linearoperator{W,V}$ by solving the system
+\begin{align*}
+    \langlerangle{Tv,w}=\langlerangle{v,T^{*}w}
+\end{align*}
+
+\noindent
+\textbf{Self-Adjoint}
+
+\noindent
+Let $v \in V, w \in W$. $T \in \linearoperator{V,W}$ is self-adjoint if $ T=T^*$
+
+
+\noindent The definition of adjoint extends to operators $T \in \linearoperator{V}$ and can be found with respect to an orthonormal basis by taking the conjugate transpose of the matrix representation of $T$. This often leads to an abuse of notation, where $^{*}$ is defined to be the conjugate transpose of a matrix. This way, we recognize that operators over real vector spaces are self-adjoint iff they are symmetric matrices. This motivates building undirected graphs as objects of study in data science. The following proofs and lemmas are geared to prove statements only about real vector spaces. To extend the spectral theorem to complex vector spaces, relax the condition on $T$ to being normal, and the spectral theorem results from the fact that every operator over a complex vector space has an eigenvalue.
+\section{Real Spectral Theorem}
+\begin{theorem}
+Suppose $V$ is a finite-dimensional vector space taking scalars over the field 
+$\mathbb{R}$. Let $T$ $\in$ $\operatorname{\mathcal{L}}(V)$ be a linear operator. $T$ is a self-adjoint operator $\Longleftrightarrow$ $\exists$ an orthonormal basis of $V$ consisting of eigenvectors of $T$.
+\end{theorem}
+
+\begin{proof}
+Begin by supposing that $\exists$ an orthonormal basis, $\mathcal{B}$, consisting of eigenvectors of $T$. Then we can diagonalize $T$ with respect to $\mathcal{B}$ by setting diagonal entries to be the eigenvalues of each basis vector $v_i$, where $i = 1, ..., n$ and $\operatorname{dim}(V) = n$, giving us the following matrix:
+
+\[
+T_{\mathcal{B}} \doteq \Sigma =\begin{bmatrix}
+    \lambda_{1} & 0 & \dots & 0 \\
+    0 & \ddots & \ddots & \vdots \\
+    \vdots & \ddots & \ddots & 0 \\
+    0 & \dots & 0 & \lambda_{n}\\
+    \end{bmatrix}
+\]
+
+This matrix representation of $T_{\mathcal{B}}$ is with respect to an orthonormal basis, so we can identify the adjoint $T_{\mathcal{B}}^{*}$ of $T_{\mathcal{B}}$ with the conjugate transpose of this matrix. Every eigenvalue is real and $T_{\mathcal{B}}$ is a diagonal matrix, thus $T_{\mathcal{B}} = T_{\mathcal{B}}^{*}$ and $T_{\mathcal{B}}$ is a self-adjoint operator.
+
+To prove the other direction of this equivalence is slightly trickier, and involves proving general properties of self-adjoint operators acting on real inner product spaces. We state these properties without proof here as a claim, and defer the proof to a subsequent lemma.
+
+\theoremstyle{remark}
+\begin{remark}{Claim:}
+Self-adjoint operators have at least one eigenvalue.
+\end{remark}
+
+Now suppose that $T$ is a self-adjoint operator over real vector space $V$. Then there exists at least one eigen vector-value pair ($u$, $\lambda$) associated to $T$. Note that $\lambda$ must be real, as we are working over a real vector space. Let $U = \operatorname{span}(u)$ be a 1-dimensional subspace of $V$ with a basis \{$u$\}.
+
+We complete the proof via induction on the dimension of $V$, $n$. Observe that $T|_{U}$ is a self-adjoint operator on U with an eigenbasis \{$u$\}, proving the base case for induction. To establish the inductive hypothesis, suppose that $W$, a vector space of dimension less than $n$, has an orthonormal basis consisting of eigenvectors of $T$. Consider the perpendicular complement of $U$, $U^{\perp}$, a subspace of $V$ with dimension $n-1$. By our inductive hypothesis, there is an orthonormal basis $\mathcal{B}_{U^{\perp}}$ of $U^{\perp}$ consisting of eigenvectors of $T|_{U^{\perp}}$. Observing that 
+$\mathcal{B} = \mathcal{B}_{U^{\perp}} \cup \{u\}$ 
+is an orthonormal basis of $V$ consisting of eigenvectors of $T$ completes the proof of the Real Spectral Theorem.
+\end{proof}
+
+\begin{lemma}
+Self-adjoint operators over real inner product spaces have at least one eigenvalue.
+\end{lemma}
+\begin{proof}
+Recall that $\operatorname{\mathcal{L}}(V)$ is a vector space itself, so we can preserve the notion of exponentiation through repeated composition of an operator. Let $T \in \operatorname{\mathcal{L}}(V)$ be self-adjoint. Consider the set \{$v$, $Tv$,$\dots$,$T^{n}v$\}, a collection of $n+1$ linearly dependent vectors in $V$. Linear dependence permits the following equation of 0:
+\begin{align*}
+    0 &= c_0 v + c_1 Tv +\dots+ c_n T^{n}v\\
+      &= (c_0 +\dots+c_n T^{n})v \\
+      &\doteq Pv
+\end{align*}
+$P$ looks like a polynomial. We're also working over a real vector space, so we can recognize $P$ with a real polynomial $P\in \mathbb{R}[x]$. $P$ can be solved as follows:
+\begin{align*}
+    0 = P &= c_n x^{n} +\dots+c_0 \\
+    &= c\prod_{i=1,\dots,k}(x^{2} + b_{i}x + c_{i})\prod_{j=1,\dots,l}(x-\lambda_j) \\ 
+\end{align*}
+The first product are the irreducible factors of $P$ over $\mathbb{R}$. The irreducibility condition is enforced as $b_{i}^{2}<4c_{i}$ for every $i=1,\dots,k$. Applying an evaluation map of $T$ to $P$ results in the first product being an invertible operator constructed of invertible operators of the form $T^{2} + b_{i}T + c_{i}I$. Thus, all roots of $P$ must reside in the rightmost product, constructed of linear terms, exactly defining at least one eigenvalue of $T$.
+\end{proof}
+The previous lemma sufficiently proves the claim in the proof of Real Spectral Theorem. However the proof of the lemma itself made implicit two assumptions: we can freely associate a matrix $P$ with a polynomial over the same scalar field, and $P$ cannot have complex eigenvalues. To resolve the former, it suffices to recognize each row of $Pv$ as a polynomial of n variables, where each variable is an element of an orthonormal basis of $V$, so $P$ actually stores $n^{2}$ polynomials over the same scalar field. We resolve the latter and end this section with a neat proof about eigenvalues of self-adjoint operators.
+\begin{lemma}
+Eigenvalues of self-adjoint operators are real. 
+\end{lemma}
+\begin{proof}
+Let $T \in \operatorname{\mathcal{L}}(V)$ be a self-adjoint operator with eigen vector-value pair $(v, \lambda)$. Consider:
+\begin{align*}
+    \lambda\langlerangle{v,v} &=
+    \langlerangle{\lambda v,v}=\langlerangle{Tv,v}= \langlerangle{v,Tv} =
+    \bar{\lambda}\langlerangle{v,v}
+\end{align*}
+\end{proof}
+
+\section{So What?}
+Consider a symmetric matrix $T \in \linearoperator{V}$ with respect to the standard basis. Spectral Theorem says we can find a matrix $U \in \linearoperator{V}$ such that each column is a unit eigenvector of T, and $\operatorname{columns}(U)$ is an orthonormal basis of $V$. We can treat $U$ as a change of basis, rotating standard basis vectors to form an eigenbasis $\mathcal{B}_{T}$ of $V$. Now, the identity matrix
+\[
+I_U = U=
+\begin{bmatrix}
+e_1 & \dots & e_n
+\end{bmatrix}
+\text{where $e_i$ = the $i$'th eigenvector of $T$}
+\]
+With $\Sigma$ as defined in 2.1, it's clear that matrix $I_U \Sigma$ is exactly the same as the multiplication $TU$, because $U$ is the eigenvector basis of $V$. Now we can compute how $T$ might transform $v \in V$ recomputing $v$ as a linear combination of eigenvectors, and then scaling each term of the combination by referencing $\Sigma$. To recompute $Tv$ in terms of standard basis vectors apply an inverse change of basis, resulting in the well known basis decomposition of linear operators over real vector spaces:
+\begin{align*}
+    T = U\Sigma U^{*}
+\end{align*}
+\end{document}
