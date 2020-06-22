@@ -14,11 +14,11 @@ def normalized_spectral_clustering_shi(data, k): # data is a list of points in R
     # 5. initialize y_i's as rows of the matrix
     # 6. apply k means
     # 7. output cluster
-    laplacian, degreeinv = laplacian_matrix(data)
+    laplacian, degree = laplacian_matrix(data)
 
-    dinvl = np.dot(degreeinv, laplacian)
     #computes all eigenvalue-vector pairs
-    evalues, u_first_k_evectors = np.linalg.eigh(dinvl)
+    #solve generalized eigenvalue problem
+    evalues, u_first_k_evectors = sp.linalg.eigh(laplacian, b = degree)
     evalues = evalues[:k]
     u_first_k_evectors = u_first_k_evectors.T[:k].T
     
@@ -29,8 +29,8 @@ def normalized_spectral_clustering_shi(data, k): # data is a list of points in R
 #         norm = np.linalg.norm(test[i])
 #         print("norm: ", norm)
 #         assert abs(norm - 1) < epsilon
-        
     plot_evalues(evalues)
+    print(u_first_k_evectors)
 
     #make_plot(u_first_k_evectors)
     # for i in range(len(data)):
@@ -51,38 +51,38 @@ def gen_random_points(number, length):
 def laplacian_matrix(data, sim_stddev=1):
     similar = similarity_matrix(data)
     degree = np.zeros((len(data), len(data)))
-    
     for i in range(len(data)):
         degree[i][i] = sum(similar[i]) 
-    degreeinv = np.linalg.inv(degree)
     laplacian = degree - similar
+    degreeinv = np.linalg.inv(degree)
 #     epsilon = 0.0001
 #     for i in range(len(laplacian)):
 #         assert abs(sum(laplacian[i])) < epsilon  
     # assert that rows sum up to one.
     return laplacian, degreeinv
 
+
 def similarity_matrix(data, s=1):
 	similarity_matrix = np.zeros((len(data), len(data)))
 	for i in range(len(data)):
 		for j in range(len(data)):
-			similarity_matrix[i][j] = np.exp(-(np.linalg.norm(data[i] - data[j]**2)/(2* s**2)))
+			similarity_matrix[i][j] = np.exp(-(np.linalg.norm(data[i] - data[j])**2)/(2* s**2))
 	return similarity_matrix
 
 def make_plot(data,assignment,k):
-	# for i in range(k):
-	# 	d = data[assignment == i].T
-	# 	x = d[0]
-	# 	y = d[1]	
-	# 	plt.scatter(x,y)
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-    for i in range(k):
-        d = data[assignment == i].T
-        x = d[0]
-        y = d[1]
-        z = d[2]
-        ax.scatter(x,y,z)
+	for i in range(k):
+		d = data[assignment == i].T
+		x = d[0]
+		y = d[1]	
+		plt.scatter(x,y)
+    # fig = plt.figure()
+    # ax = fig.add_subplot(111, projection='3d')
+    # for i in range(k):
+    #     d = data[assignment == i].T
+    #     x = d[0]
+    #     y = d[1]
+    #     z = d[2]
+    #     ax.scatter(x,y,z)
         
 def plot_evalues(evalues):
     print(evalues)
