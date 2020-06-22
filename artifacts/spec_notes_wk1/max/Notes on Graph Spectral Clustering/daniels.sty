@@ -1,0 +1,321 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Daniels - LaTeX Generic Template
+% Version 1.0 - May 4, 2020
+% 
+% Latest Author: Max Daniels (mdnls.cc)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+% -----------
+%
+% Fork of "Lachaise Assignment" by Marion Lachaise and François Févotte, Version 1.0
+%
+% Link to source:
+% https://www.latextemplates.com/template/lachaise-assignment
+%
+% Fork authors: 
+% Marion Lachaise & François Févotte
+% Vel (vel@LaTeXTemplates.com)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\usepackage{amsmath,amssymb,amsthm,latexsym,color,mathtools} %Basic packages
+\usepackage{dsfont} % bb fonts for numbers
+\usepackage[dvipsnames]{xcolor}
+\usepackage{braket} % nice sets and more
+\usepackage{accents}
+\usepackage{musicography}
+
+\usepackage{stmaryrd}
+
+\usepackage{enumerate} % Custom item numbers for enumerations
+
+\usepackage[ruled]{algorithm2e} % Algorithms
+
+\usepackage[framemethod=tikz]{mdframed} % Allows defining custom boxed/framed environments
+
+\usepackage{listings} % File listings, with syntax highlighting
+\lstset{
+	basicstyle=\ttfamily, % Typeset listings in monospace font
+}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+%----------------------------------------------------------------------------------------
+%	MATH UTILITIES
+%----------------------------------------------------------------------------------------
+
+\allowdisplaybreaks[2] %Allow page breaks in multi-line displays
+
+\let\temp\phi
+\let\phi\varphi
+\let\varphi\temp
+
+\let\temp\epsilon
+\let\epsilon\varepsilon
+\let\varepsilon\temp
+
+\newcommand{\seq}[1]{\{#1\}}
+\newcommand{\linf}{\lim_{n \to \infty}}
+\newcommand{\Alpha}{\mathcal{A}}
+\newcommand{\ubar}[1]{\underaccent{\bar}{#1}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\newcommand{\limnf}[1]{\liminf \limits_{#1}}
+\newcommand{\limsp}[1]{\limsup \limits_{#1}}
+\newcommand{\R}{{\mathbb R}}
+\newcommand{\C}{{\mathbb C}}
+\newcommand{\N}{{\mathbb N}}
+\newcommand{\Q}{{\mathbb Q}}
+\newcommand{\Z}{{\mathbb Z}}
+\newcommand{\E}{{\mathbb E}}
+
+%----------------------------------------------------------------------------------------
+%	PROOF FORMAT
+%----------------------------------------------------------------------------------------
+
+\mdfdefinestyle{callout}{%
+	topline=false, bottomline=false,
+	leftline=false, rightline=false,
+	nobreak,
+	singleextra={%
+		\draw[very thick](P-|O)++(0,0)--(O);%--(O-|P);
+	}
+}
+
+% Define a custom environment for information
+\newenvironment{callout}{
+	\begin{mdframed}[style=info] }
+    { \end{mdframed} }
+    
+\newtheoremstyle{plain}
+  {3pt}   % ABOVESPACE
+  {0pt}   % BELOWSPACE
+  {\itshape}  % BODYFONT
+  {0pt}       % INDENT (empty value is the same as 0pt)
+  {\bfseries} % HEADFONT
+  {.}         % HEADPUNCT
+  {3pt} % HEADSPACE
+  {}          % CUSTOM-HEAD-SPEC
+
+\newtheoremstyle{exercise}% name
+ {3pt}%      Space above
+ {3pt}%      Space below
+ {}%         Body font
+ {}%         Indent amount (empty = no indent, \parindent = para indent)
+ {\bfseries}% Thm head font
+ {.}%        Punctuation after thm head
+ {3pt}%     Space after thm head: " " = normal interword space;
+       %       \newline = linebreak
+ {\thmname{#1} \thmnumber{#2}, \thmname{#3}}%         Thm head spec (can be left empty, meaning `normal')
+ 
+\newtheoremstyle{claim}% name
+ {3pt}%      Space above
+ {3pt}%      Space below
+ {}%         Body font
+ {}%         Indent amount (empty = no indent, \parindent = para indent)
+ {\bfseries}% Thm head font
+ {.}%        Punctuation after thm head
+ {3pt}%     Space after thm head: " " = normal interword space;
+       %       \newline = linebreak
+ {\thmname{#1} \thmnumber{#2}}%         Thm head spec (can be left empty, meaning `normal')
+ 
+\theoremstyle{exercise}
+\newtheorem{exr}{Exercise}
+
+\theoremstyle{plain}
+\newtheorem{-thm}{Theorem}[section]
+\newtheorem{-prop}[-thm]{Proposition}
+\newtheorem{-lem}[-thm]{Lemma}
+\newtheorem{-cor}[-thm]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{dfn}[-thm]{Definition}
+
+\theoremstyle{claim}
+\newtheorem{claim}{Claim}[exr]
+
+\newcommand{\nb}[1]{{\color{Maroon}{$\star$ #1 $\star$}}}
+
+\newenvironment{theorem}{
+    	\begin{mdframed}[style=callout]
+    	\begin{-thm}
+	}
+    { \end{-thm} \end{mdframed} \vspace{-4px}}
+    
+\newenvironment{prop}{
+    	\begin{mdframed}[style=callout]
+    	\begin{-prop}
+	}
+    { \end{-prop} \end{mdframed} \vspace{-4px}}
+    
+\newenvironment{lemma}{
+    	\begin{mdframed}[style=callout]
+    	\begin{-lem}
+	}
+    { \end{-lem} \end{mdframed} \vspace{-4px}}
+
+\newenvironment{cor}{
+    	\begin{mdframed}[style=callout]
+    	\begin{-cor}
+	}
+    { \end{-cor} \end{mdframed} \vspace{-4px}}
+    
+    
+\makeatletter
+\renewenvironment{proof}[1][\proofname]{
+  \pushQED{\qed}%
+  \normalfont \partopsep=\z@skip \topsep=\z@skip
+  \trivlist
+  \item[\hskip\labelsep
+        \itshape
+    #1\@addpunct{.}]\ignorespaces
+}{%
+  \popQED\endtrivlist\@endpefalse \medskip
+}
+\makeatother
+
+
+\newenvironment{rem}{\textit{Remark}.}{}
+\makeatother
+%----------------------------------------------------------------------------------------
+%	DOCUMENT MARGINS
+%----------------------------------------------------------------------------------------
+
+\usepackage{geometry} % Required for adjusting page dimensions and margins
+
+\geometry{
+	paper=a4paper, % Paper size, change to letterpaper for US letter size
+	top=2.5cm, % Top margin
+	bottom=3cm, % Bottom margin
+	left=2.5cm, % Left margin
+	right=2.5cm, % Right margin
+	headheight=14pt, % Header height
+	footskip=1.5cm, % Space from the bottom margin to the baseline of the footer
+	headsep=1.2cm, % Space from the top margin to the baseline of the header
+	%showframe, % Uncomment to show how the type block is set on the page
+}
+
+%----------------------------------------------------------------------------------------
+%	FONTS
+%----------------------------------------------------------------------------------------
+
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+
+%----------------------------------------------------------------------------------------
+%	COMMAND LINE ENVIRONMENT
+%----------------------------------------------------------------------------------------
+
+% Usage:
+% \begin{commandline}
+%	\begin{verbatim}
+%		$ ls
+%		
+%		Applications	Desktop	...
+%	\end{verbatim}
+% \end{commandline}
+
+\mdfdefinestyle{commandline}{
+	leftmargin=10pt,
+	rightmargin=10pt,
+	innerleftmargin=15pt,
+	middlelinecolor=black!50!white,
+	middlelinewidth=2pt,
+	frametitlerule=false,
+	backgroundcolor=black!5!white,
+	frametitle={Command Line},
+	frametitlefont={\normalfont\sffamily\color{white}\hspace{-1em}},
+	frametitlebackgroundcolor=black!50!white,
+	nobreak,
+}
+
+% Define a custom environment for command-line snapshots
+\newenvironment{commandline}{
+	\medskip
+	\begin{mdframed}[style=commandline]
+}{
+	\end{mdframed}
+	\medskip
+}
+
+%----------------------------------------------------------------------------------------
+%	FILE CONTENTS ENVIRONMENT
+%----------------------------------------------------------------------------------------
+
+% Usage:
+% \begin{file}[optional filename, defaults to "File"]
+%	File contents, for example, with a listings environment
+% \end{file}
+
+\mdfdefinestyle{file}{
+	innertopmargin=1.6\baselineskip,
+	innerbottommargin=0.8\baselineskip,
+	topline=false, bottomline=false,
+	leftline=false, rightline=false,
+	leftmargin=2cm,
+	rightmargin=2cm,
+	singleextra={%
+		\draw[fill=black!10!white](P)++(0,-1.2em)rectangle(P-|O);
+		\node[anchor=north west]
+		at(P-|O){\ttfamily\mdfilename};
+		%
+		\def\l{3em}
+		\draw(O-|P)++(-\l,0)--++(\l,\l)--(P)--(P-|O)--(O)--cycle;
+		\draw(O-|P)++(-\l,0)--++(0,\l)--++(\l,0);
+	},
+	nobreak,
+}
+
+% Define a custom environment for file contents
+\newenvironment{file}[1][File]{ % Set the default filename to "File"
+	\medskip
+	\newcommand{\mdfilename}{#1}
+	\begin{mdframed}[style=file]
+}{
+	\end{mdframed}
+	\medskip
+}
+
+%----------------------------------------------------------------------------------------
+%	NUMBERED QUESTIONS ENVIRONMENT
+%----------------------------------------------------------------------------------------
+
+% Usage:
+% \begin{question}[optional title]
+%	Question contents
+% \end{question}
+
+\mdfdefinestyle{question}{
+	innertopmargin=1.2\baselineskip,
+	innerbottommargin=0.8\baselineskip,
+	roundcorner=5pt,
+	nobreak,
+	singleextra={%
+		\draw(P-|O)node[xshift=1em,anchor=west,fill=white,draw,rounded corners=0pt]{%
+		Question \theQuestion\questionTitle};
+	},
+}
+
+\newcounter{Question} % Stores the current question number that gets iterated with each new question
+
+% Define a custom environment for numbered questions
+\newenvironment{question}[1][\unskip]{
+	\bigskip
+	\stepcounter{Question}
+	\newcommand{\questionTitle}{~#1}
+	\begin{mdframed}[style=question]
+}{
+	\end{mdframed}
+	\medskip
+}

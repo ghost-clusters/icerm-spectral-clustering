@@ -1,0 +1,68 @@
+\newcommand{\vmat}{\begin{pmatrix}v_1\\v_2\end{pmatrix}}
+\newcommand{\boldv}[1]{\boldsymbol{#1}}
+\newcommand{\V}[1]{\mathbf{#1}}
+\renewcommand{\vec}[1]{\overrightarrow{#1}}
+\renewcommand{\v}[1]{\left\langle #1\right\rangle}
+\newcommand{\mat}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\real}[1]{{\rm Re}\{#1\}}
+\def\slantfrac#1#2{\hbox{$\,^#1\!/_#2$}}
+\newcommand{\dfndx}[3]{\frac{\mathrm{d}^{#2}#1}{\mathrm{d}#3^{#2}}}
+\newcommand{\px}[1]{\partial #1}
+\newcommand{\ppx}[1]{\frac{\partial}{\partial #1}}
+\newcommand{\pfnpx}[3]{\frac{\partial^{#2}#1}{\partial #3^{#2}}}
+\newcommand{\proj}[1]{\textrm{proj}_{#1}}
+\newcommand{\rank}{\mathrm{rank}\,}
+\newcommand{\funspace}[1]{\mathcal{#1}}
+\newcommand{\operator}[1]{\mathscr{#1}}
+
+% unit vectors
+\renewcommand{\i}{\V{i}}
+\renewcommand{\j}{\V{j}}
+\renewcommand{\k}{\V{k}}
+
+\newcommand{\mathd}{\mathrm{d}}
+\newcommand{\dfdx}[2]{\frac{\mathd #1}{\mathd #2}}
+\newcommand{\ddx}[1]{\frac{\mathd}{\mathd #1}}
+\newcommand{\dx}[1]{\mathd #1}
+\newcommand{\pfpx}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\N}{\mathbbm{N}}
+\newcommand{\R}{\mathbbm{R}}
+\newcommand{\C}{\mathbbm{C}}
+\newcommand{\Z}{\mathbbm{Z}}
+\newcommand{\nchoosek}[2]{\left(\begin{array}{c} #1 \\ #2 \end{array}\right)}
+
+\newcommand{\red}[1]{{\bf \textcolor{red}{#1}}}
+
+% argmin, argmax
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem{definition}{Definition}[section]
+\newtheorem{lemma}{Lemma}[section]
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[section]
+
+\newtheoremstyle{example}{12pt}{\topsep}%
+ {}%         Body font
+ {}%         Indent amount (empty = no indent, \parindent = para indent)
+ {\bfseries}% Thm head font
+ {}%        Punctuation after thm head
+ {\newline}%     Space after thm head (\newline = linebreak)
+ {\thmname{#1}\thmnumber{ #2}\thmnote{ #3}}%         Thm head spec
+
+\theoremstyle{example}
+\newtheorem{example}{Example}[section]
+
+% For aligned \stackrel, use \leftstackrel
+\newlength{\leftstackrelawd}
+\newlength{\leftstackrelbwd}
+\def\leftstackrel#1#2{\settowidth{\leftstackrelawd}%
+{${{}^{#1}}$}\settowidth{\leftstackrelbwd}{$#2$}%
+\addtolength{\leftstackrelawd}{-\leftstackrelbwd}%
+\leavevmode\ifthenelse{\lengthtest{\leftstackrelawd>0pt}}%
+{\kern-.5\leftstackrelawd}{}\mathrel{\mathop{#2}\limits^{#1}}}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
