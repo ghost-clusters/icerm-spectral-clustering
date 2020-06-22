@@ -78,9 +78,6 @@ def load_roget_graph():
     return G.to_undirected()
 
 
-
-
-
 class TestDatasetMethods(unittest.TestCase):
     def test_roget(self):
         G = load_roget_graph()
