@@ -3,7 +3,6 @@ import scipy as sp
 import networkx as nx
 from data import datasets as data
 from Kmeans import kmeans
-#from datasets import gaussian_mixture
 from scipy import linalg
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
