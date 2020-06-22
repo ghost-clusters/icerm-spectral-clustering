@@ -63,6 +63,6 @@ def kmeans():
     plt.scatter(*centroids)
     plt.show()
 
-kmeans()
+#kmeans()
 
 

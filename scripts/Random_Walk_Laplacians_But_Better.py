@@ -1,13 +1,12 @@
 import numpy as np
 import scipy as sp
 import networkx as nx
-from Kmeans import kmeans
+from Kmeans_Demo import kmeans
 from normalized_spectral_clustering_shi import laplacian_matrix, similarity_matrix, make_plot
-from datasets import gaussian_mixture
+from data.datasets import gaussian_mixture
 from scipy import linalg
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from spectral_clustering import spectral_clustering
 from tqdm import tqdm
 
 # ## Clusting based off of tranistion matrix
@@ -50,8 +49,6 @@ def random_walk_clustering(numOfTrials, data, shape):
 
 # ## Data Generation
 
-from datasets import gaussian_mixture
-
 n_gaussians = 4
 n_pts = 10
 n = n_pts * n_gaussians
@@ -77,5 +74,6 @@ shape , _ = transition.shape
 # calling fn and plotting
 numOfTrials = 1000
 assignments,clusterAssign = random_walk_clustering(numOfTrials,data,shape)
+print(assignments)
 make_plot(data,assignments,clusterAssign+1)
 plt.show()
