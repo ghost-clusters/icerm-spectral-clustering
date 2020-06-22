@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from data import datasets as data
-#from datasets import gaussian_mixture
+from datasets import gaussian_mixture
+import unittest
 
 
 def kmeans(data, k, iters=100):
@@ -23,7 +23,7 @@ def kmeans(data, k, iters=100):
 			]
 		# find index of the nearest centroid for each point
 		# (argmin returns the *index* of the minimum item, rather than the item itself)
-		return np.argmin(np.hstack(dists_per_centroid), axis=1)
+		return np.argmin(np.hstack(dists_per_centroid), axis=0)
 
 	def new_centroids(assns, centroids):
 		# for j=1..k, find all data columns matching this assignment, then average the cols
@@ -40,5 +40,19 @@ def kmeans(data, k, iters=100):
 		assns = new_assns(assns, centroids)
 	return centroids, assns
 
+class TestKMeans(unittest.TestCase):
+	def testdiscrete(self):
+		single = np.ones((1,1))
+		cluster, _ = kmeans(single,1)
+		self.assertEqual(cluster.shape, (1,1))
+	
+	def testcontinuous(self):
+		data = gaussian_mixture(3,4,5)
+		cluster1, assmt1 = kmeans(data, 3)
+		self.assertEqual(cluster1.shape, (3,5))
+		
+	
+		
 if __name__ == "__main__":
 	# TODO: @shubham, test me!
+	unittest.main()
