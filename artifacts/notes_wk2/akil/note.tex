@@ -1,0 +1,62 @@
+\documentclass[10pt]{amsart}
+
+\usepackage{amsmath,amssymb,graphicx,bbm}
+\usepackage{amsthm,verbatim}
+\usepackage{mathrsfs,mathtools}
+
+\usepackage[footnotesize,bf]{caption}
+\usepackage[left=1.25in,right=1.25in,top=1in]{geometry}
+
+\usepackage{mathdefs}
+
+\begin{document}
+
+Generalized eigenvalue problems: find generalized eigenvalues of $(L,D)$, where we assume $D > 0$. (If a Hermitian matrix $A$ is spd, we write $A > 0$.) Let's also assume that $L$ is symmetric. Solve for $(\lambda, v)$:
+\begin{align*}
+  L v = \lambda D v.
+\end{align*}
+Note some things:
+\begin{itemize}
+  \item Let's premultiply by $D^{-1}$: Solve for $(\lambda, v)$:
+    \begin{align*}
+      D^{-1} L v = \lambda v.
+    \end{align*}
+    Why don't we just solve \textit{standard} eigenvalue problems? This is \textit{not} a symmetric eigenvalue problem. The matrix $D^{-1} L$ could be \textit{defective}, meaning that it could have an \textit{incomplete} set of eigenvectors. I.e., the algebraic multiplicity of an eigenvalue could be strictly larger than it's geometric multiplicity. E.g., the matrix
+    \begin{align*}
+      A = \left(\begin{array}{cc} 
+                1 & 1 \\
+                0 & 1
+      \end{array}\right),
+    \end{align*}
+    is defective. $\lambda = 1$ is an eigenvalue of algebraic multiplicity 2. But it's of geometric multiplicity 1. (Because the invariant subpsace associated to $\lambda = 1$ has dimension 1.) Another problem: mathematically speaking, the \textit{stability} (``condition number") of the map $D^{-1} L \mapsto V$, where $V$ is a matrix of eigenvectors ``can be large". But the stability of the problem of finding an eigenvector matrix from a \textit{Hermitian} matrix is unity. (This notion of conditioning is not (really) the condition number of a matrix.)
+
+  \item Alternative: if $D > 0$, then Spectral Theorem:
+    \begin{align*}
+      D = U T U^T,
+    \end{align*}
+    where $T$ is diagonal with strictly positive (diagonal) entries, and $U$ is unitary. I can define
+    \begin{align*}
+      D^{1/2} &= U T^{1/2} U^T, & T^{1/2} &= \mathrm{diag}\left(\sqrt{t_1}, \ldots, \sqrt{t_N}\right)
+    \end{align*}
+    Can verify: $D^{1/2} D^{1/2} = D$, and that $D^{1/2}$ is symmetric. So $D^{1/2}$ is \textbf{a} symmetric square root of $D$. (In fact, this is the only symmetrtic sqrt of $D$, but it's not the only sqrt of $D$.) So not only does $D$ have a unitary diagonalization, but so does $D^{1/2}$, and in particular $D^{1/2}$ is invertible. 
+
+    Let's look again at 
+    \begin{align*}
+      L v &= \lambda D v \\
+          &= \lambda D^{1/2} D^{1/2} v \\
+      L D^{-1/2} D^{1/2} v &= \lambda D^{1/2} D^{1/2} v \\
+      \left( D^{-1/2} L D^{-1/2}\right) D^{1/2} v &= \lambda D^{1/2} v \\
+      A w = \lambda w,
+    \end{align*}
+    where $A \coloneqq D^{-1/2} L D^{-1/2}$ and $w \coloneqq D^{1/2} v$. Since $A$ is symmetric: there exist a unitary diagonalization,
+    \begin{align*}
+      A = W \Lambda W^T,
+    \end{align*}
+    where $W$ is unitary. Note: $\Lambda$ contains our generalized eigenvalues. And each column of $W$ is ``sort of" a generalized eigenvector. The ``sort of" is resolved by $w = D^{1/2} v$. I.e., 
+    \begin{align*}
+      V \coloneqq D^{-1/2} W,
+    \end{align*}
+    is a matrix with our generalized eigenvectors.
+\end{itemize}
+
+\end{document}

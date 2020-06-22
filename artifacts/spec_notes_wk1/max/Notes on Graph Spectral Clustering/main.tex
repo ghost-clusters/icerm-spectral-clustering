@@ -1,0 +1,307 @@
+
+\documentclass{article}
+
+\usepackage[english]{babel}
+\usepackage[square,numbers]{natbib}
+\bibliographystyle{plainnat}
+\setcitestyle{authoryear}
+
+\usepackage{daniels}
+% Includes
+%   amsmath
+%   amssymb
+%   amsthm
+%   latexsym
+%   color
+%   mathtools
+%   dsfont
+%   xcolor with dvipsnames
+%   braket
+%   accents
+%   musicography
+%   stmaryrd
+%   enumerate 
+%   algorithm2e
+%   mdframed
+%   listings
+
+% ==============================
+%           Details   
+% ==============================
+
+\title{Notes on Graph Spectral Clustering}
+\author{Max Daniels\\ \texttt{daniels.g@northeastern.edu}} 
+\date{Northeastern University --- \today}
+
+%----------------------------------------------------------------------------------------
+
+\begin{document}
+
+\maketitle 
+
+\section{Spectral Theorem}
+\begin{theorem}
+Let $A \in \R^{n \times n}$ be a real symmetric matrix. Then $A$ is orthogonally diagonalizable:
+\begin{equation}
+    A = U \Sigma U^T \qquad U \text{ orthogonal and } \Sigma \text{ diagonal}
+\end{equation}
+The columns of $U$ are \textit{eigenvectors} of A, and moreover, the associated eigenvalues are real.
+\end{theorem}
+
+\begin{proof}
+The eigenvectors of $A$ diagonalize $A$. It remains to show these eigenvectors are orthogonal and that the corresponding eigenvalues are real.
+\end{proof}
+
+\begin{theorem}
+The eigenvalues of a real symmetric matrix $A \in \R^{n \times n}$ are real.
+\end{theorem}
+\begin{proof}
+The characteristic polynomial of $A$ has real coefficients by construction. Hence by \eqref{lem:polyconj}, its eigenvalues must come in conjugate pairs: $P(z) = 0 \implies P(z^*) = 0$.
+
+Let $v$ be a nonzero eigenvector of $A$. By definition, $A = A^H$, so 
+\begin{equation}
+    \lambda \norm{v}^2 = v^H A v = (v^H A v)^H = \lambda^* \norm{v}^2
+\end{equation}
+It follows that $\lambda = \lambda^*$ and so $\lambda \in \R$.
+\end{proof}
+
+\begin{theorem}
+The eigenvectors of a real symmetric matrix $A \in \R^{n \times n}$ are orthogonal. 
+\end{theorem}
+\begin{proof}
+There are two cases:
+\begin{enumerate}
+    \item $u$, $v$ are independent eigenvectors sharing an eigenvalue. Then any linear combination of $u$, $v$ is another eigenvector. They may be orthogonalized with Graham Schmidt. 
+    
+    \item $u$, $v$ are independent eigenvectors with eigenvalues $\lambda$, $\mu$ respectively. Suppose  $(u^T v) \not = 0$. Then,
+    \begin{align}
+        u^T A^T A v = \lambda^2 (u^T v) = \mu^2 (u^T v) = \lambda \mu (u^T v)
+    \end{align}
+    This would imply
+    \begin{align}
+        \mu(\mu - \lambda) (u^T v) & = 0 \\
+        \lambda(\mu - \lambda) (u^T v) & = 0
+    \end{align}
+    By assumption, $(\mu - \lambda) (u^T v) \not = 0$, while $\mu = \lambda = 0$ is contradictory. It follows that $u^T v = 0$.
+\end{enumerate} 
+\end{proof}
+
+\begin{lemma} \label{lem:polyconj}
+Let $P \in \R[x]$ be a polynomial with real coefficients. Then $(P(z))^* = P(z^*)$
+\end{lemma}
+\begin{proof}
+Key idea: 
+\begin{equation} \label{eqn:imag}
+    (-i)^k = \begin{cases}
+    i^k & k \text{ even} \\
+    -i^k & k \text { odd}
+    \end{cases}
+\end{equation}
+Take a monomial $z^n$ where $z = a + ib \in \C$. Expand using the binomial theorem and collect separately the real and imaginary parts. Each term of the real part has even powers of $(ib)^k$ and is therefore unaffected. Each term of the imaginary part is negated. The property "distributes" for sums of many of these atoms, as long as they have strictly real coefficients.
+\end{proof}
+
+
+
+\section{Notes on Spectral Clustering}
+\nocite{von_luxburg2007spectral}
+
+Graph Spectral Clustering leverages the idea that the eigenvectors of $\mathcal{L}$, the so-called "Graph Laplacian," approximate indicator functions of clusters in the graph. In particular, $f^T \mathcal{L} f$ can (mainly by coincidence) be written like a min-cut problem on the graph.
+
+\subsection{Graph Laplacian}
+\begin{dfn}
+Let $G = (V, E)$ be a weighted graph with degree matrix $D$ and weight matrix $W$. Its Laplacian is defined $\mathcal{L} = D - W$.
+\end{dfn}
+By coincidence, $\mathcal{L}$ yields a nice quadratic form:
+\begin{align} \label{eq:quadform}
+    \langle f, \mathcal{L} f \rangle = \frac{1}{2} \sum_{i, j = 1}^n w_{ij}(f_i - f_j)^2
+\end{align}
+It turns out that \eqref{eq:quadform} can be manipulated into the form of an optimization objective for variations of the GraphCut problem. So, minimizing \eqref{eq:quadform} is either finding the smallest eigenvectors of $\mathcal{L}$, or finding minimum cuts of a graph, depending on how you look at it.
+
+\begin{theorem}{Corollaries of \eqref{eq:quadform}} 
+
+The Laplacian $\mathcal{L}$ satisfies:
+
+\begin{enumerate}
+    \item By construction $\mathcal{L}$ is real and symmetric.
+    \item Since $\langle f, \mathcal{L} f \rangle \geq 0$ for all $f \in \R^n$, $\mathcal{L}$ is positive semi-definite.
+    \item $\mathds{1}_V$ is an eigenvector with eigenvalue $0$. 
+    \item If $A \subset V$ is disconnected from $\bar{A}$, then $\mathds{1}_A$ and $\mathds{1}_{\bar{A}}$ are eigenvectors with eigenvalues $0$. 
+\end{enumerate}
+\end{theorem}
+\begin{rem}
+The last two properties hint at the connection between $0$ eigenvalues and minimal cuts between disconnected components of $G$. In both cases, the "objective value" is zero. We will see this relationship extends to min-cuts of non-zero cost.
+\end{rem}
+
+\begin{dfn}{Normalized Laplacian}
+
+There are two definitions of the Normalized Laplacian:
+
+\begin{align}
+    \mathcal{L}_{\text{rw}} & = D^{-1} \mathcal{L} = I - D^{-1}W \\
+    \mathcal{L}_{\text{sym}} & = D^{-1/2} \mathcal{L} D^{-1/2} = I - D^{-1/2} W D^{-1/2}
+\end{align} 
+\end{dfn}
+\begin{rem}
+Note that $D^{-1}W$ has rows matching $W$ but scaled to be probability vectors. So $\mathcal{L}_{\text{rw}}$ is associated with the \textit{random walk} induced on $G$ by the edge weights. $\mathcal{L}_{\text{sym}}$ is normalized in a way that maintains an interpretation like \eqref{eq:quadform}, and also symmetry.
+\end{rem}
+
+\begin{theorem}{Analogous Properties of Normalized Laplacians}
+
+\noindent The normalized Laplacians satisfy the following:
+
+\begin{enumerate}
+    \item $\mathcal{L}_{\text{sym}}$ adds normalization to \eqref{eq:quadform}:
+    
+    \begin{equation}
+        f^T \mathcal{L}_{\text{sym}} f = \frac{1}{2} \sum_{i, j = 1}^n w_{ij} \left(\frac{f_i}{\sqrt{d_i}} - \frac{f_j}{\sqrt{d_j}} \right)^2
+    \end{equation}
+    
+    \item By its definition, $\mathcal{L}_{\text{rw}}$ has $0$ eigenvalues for the same vectors that $\mathcal{L}$ does, so it shares the cluster intuition.
+    \end{enumerate}
+\end{theorem}
+\begin{rem}
+Together, the two normalized Laplacians have all the same properties as $\mathcal{L}$, but shared in a weird way. From the Min-cut perspective they are equivalent.
+\end{rem}
+
+\subsection{Algorithms}
+\subsubsection*{Normalized and Unnormalized Graph Spectral Clustering}
+Unnormalized Graph Spectral Clustering:
+\begin{enumerate}
+    \item Fix $k$ the number of clusters
+    \item Compute a rank-$k$ approximation of $\mathcal{L}$
+    \item These columns approximate the indicator functions for $k$ different (possibly overlapping) clusters. Apply $k$-means to the rows to group the points indicated to be in the same clusters. 
+\end{enumerate}
+Normalized ($\mathcal{L}_{\text{rw}}$) Graph Spectral Clustering:
+\begin{enumerate}
+    \item Fix $k$ the number of clusters
+    \item Compute a rank-$k$ approximation of $\mathcal{L}_{\text{rw}}$
+    \item These columns approximate the indicator functions for $k$ different (possibly overlapping) clusters. Apply $k$-means to the rows to group the points indicated to be in the same clusters. 
+\end{enumerate}
+Normalized ($\mathcal{L}_{\text{sym}}$) Graph Spectral Clustering:
+\begin{enumerate}
+    \item Fix $k$ the number of clusters
+    \item Compute a rank-$k$ approximation of $\mathcal{L}_{\text{sym}}$
+    \item Normalize each row of $\mathcal{L}_{\text{sym}}$
+    \item These columns approximate the indicator functions for $k$ different (possibly overlapping) clusters. Apply $k$-means to the rows to group the points indicated to be in the same clusters. 
+\end{enumerate}
+
+\subsubsection*{RatioCut}
+
+RatioCut and NCut are \textit{graph cut problems}. A graph cut is a partition of vertices $V$ into disjoint sets $\{A_i\}_{i=1}^N$. The minimum cut problem seeks partitions which minimize the  weight of the cut edges, or some normalized version of this. Here are some common objectives:
+\begin{align}
+    \text{cut}(A_1, ..., A_k) & := \frac{1}{2} \sum_{i = 1}^k W(A_i, \bar{A_i}) \\
+    \text{NCut}(A_1, ..., A_k) & := \sum_{i=1}^k \frac{\text{cut}(A_i, \bar{A}_i)}{|A_i|} \\
+    \text{RatioCut}(A_1, ..., A_k) & := \frac{1}{2} \sum_{i=1}^k \frac{\text{cut}(A_i, \bar{A}_i)}{\text{vol}(A_i)}
+\end{align}
+
+In the simplest case ($k=2$ for cut), we can demonstrate the connection to $\mathcal{L}$. \\The trick:
+\begin{equation} \label{dfn:f}
+    \text{Let $f \in \R^n$} \qquad f_i = \begin{cases}
+        \sqrt{|\bar{A}|/|A|} & v_i \in A \\
+        \sqrt{|A|/|\bar{A}|} & v_i \in \bar{A}
+    \end{cases}
+\end{equation}
+The derivation:
+\begin{align}
+    f^T \mathcal{L} f & = \frac{1}{2} \sum_{i, j = 1}^n w_{ij}(f_i - f_j)^2 \\
+    & = \frac{1}{2} \left( \sqrt{\frac{|\bar{A}|}{|A|}} +  \sqrt{\frac{|A|}{|\bar{A}|}} \right)^2 \left[ \sum_{i \in A, j \in \bar{A}} w_{ij} + \sum_{i \in A, j \in \bar{A}} w_{ij} \right] \\
+    & = \text{cut}(A, \bar{A}) \left( \frac{|A| + |\bar{A}|}{|A|} + \frac{|A| + |\bar{A}|}{|\bar{A}|} \right) \\
+    & = |V| \cdot \text{RatioCut}(A, \bar{A})
+\end{align}
+The $(f_i - f_j)$ makes this work. Any indicator function passed into $\mathcal{L}$ will cancel all terms from the same cluster, setting up the connection to cut. Symmetry of entries of $f$ gives each coordinate the same coefficient, which factors out, so we just need to pick coefficients working out to the appropriate scale.
+
+Hence we can minimize RatioCut by minimizing $f^T \mathcal{L} f$ under appropriate constraints. What are the constraints? Can we use them to find a recipe for this minimization problem?
+\begin{enumerate}
+    \item $f^T \perp \mathds{1}$ - check by inspection (something one might expect from symmetry)
+    \item $\|f\|^2 = n$ - the value $n$ in less important than the fact that $\|f\|$ is fixed. It falls out of the scale of $f$ to normalize cut. 
+\end{enumerate}
+Now, using this structure:
+\begin{align}
+   &\min_{A \subset V} f^T \mathcal{L} f \text{ subject to $f \perp \mathds{1}$, $f_i$ as \eqref{dfn:f}, $\|f\|=\sqrt{n}$ }  \qquad &\text{[this is NP-Hard]} \\
+   &\min_{A \subset V} f^T \mathcal{L} f \text{ subject to $f \perp \mathds{1}$, $\|f\|=\sqrt{n}$ }  \qquad &\text{[pay discreteness for feasibility]} 
+\end{align}
+Interestingly, $\mathds{1}$ is an eigenvector of $\mathcal{L}$, so by Rayleigh-Ritz this minimization asks for the second eigenvector.
+\subsubsection*{Extension of RatioCut for $k>2$}
+
+\begin{enumerate}
+    \item Rather than $\pm c$ entries of $f$, we can use entries $c$ or $0$.
+    \item This computes the cut cost for a single $A_i$, rather than the cut cost for $A_i$ and $\bar{A}_i$ at the same time.
+    \item So we simply compute the cost for each of the $h_i^T A_i h_i$, which can be done in a matrix.
+\end{enumerate}
+Specifically:
+\begin{align} 
+    \label{dfn:h} h_i & = \begin{cases}
+        1/\sqrt{|A_i|} & v_i \in A_i \\
+        0 & \textit{else}
+    \end{cases} \\
+    h_i^T \mathcal{L} h_i & = \frac{\text{cut}(A_i, \bar{A}_i)}{|A_i|} \\
+    \text{RatioCut}(A_1, ..., A_k) & = \sum_{i=1}^k h_i^T \mathcal{L} h_i = \text{Tr}(H^T \mathcal{L} H)
+\end{align}
+Now, $f \perp \mathds{1}$ may have seemed strange, but with the new $h_i$ the requirement is orthogonality. There is a similar optimization setup:
+\begin{align}
+   &\min_{A \subset V} \text{Tr}(H^T \mathcal{L} H) \text{ subject to $H^T H = I$, $h_i$ as \eqref{dfn:h} }  \qquad &\text{[this is NP-Hard]} \\
+   &\min_{A \subset V} \text{Tr}(H^T \mathcal{L} H) \text{ subject to $H^T H = I$}  \qquad &\text{[pay discreteness for feasibility]} 
+\end{align}
+By Rayleigh-Ritz: $H$ has to be the $k$ smallest eigenvectors.
+
+\subsubsection*{Extension to NCut for $k>2$}
+NCut follows the same template: construct indicator vectors $h_i$ whose elements are normalized. Bundle these vectors into a matrix and do trace minimization against $\mathcal{L}_{\text{rw}}$ or $\mathcal{L}_{\text{sym}}$, relaxing a discreteness constraint on the indicator vectors.
+
+A notable point: the naive setup is to weight points by cluster volume:
+\begin{equation}
+    h_{i,j } = \begin{cases} 
+    1/\sqrt{\text{vol}(A_j)} & v_i \in A_i \\
+    0 & \text{ else}
+    \end{cases}
+\end{equation}
+But this leads to
+\begin{equation}
+     \langle h_i, h_j \rangle = \delta_{ij} \cdot \frac{|A_i|}{\text{vol}(A_i)}
+\end{equation}
+Each coordinate of $h_i$ has the same "weight" in this sum, and they need to be reweighted for the $h_i$ to be orthonormal. That is, we need $\langle h_i, h_j\rangle_D = h_i^T D h_j = \delta_{i,j}$. \textit{RatioCut normalization is implicitly orthormalized, while NCut needs to be weighted by node degrees, introducing the $D$ factor that brings normalized Laplacians into the minimization problem}. The corresponding optimization has two equivalent forms:
+\begin{align}
+     \min_{K \in \R^{n \times k}} & \text{Tr}(K^T \mathcal{L} K) \text{ subject to } K^T D K = I \label{eq:lrw} \\
+     \min_{R \in \R^{n \times k}} & \text{Tr}(R^T D^{-1/2} \mathcal{L} D^{-1/2} R)  \text{ subject to } R^T R = I  \label{eq:lsym}
+\end{align}
+By \eqref{eq:lsym} and Rayleigh-Ritz, $R$ has the smallest eigenvectors of $\mathcal{L}_{\text{sym}}$. Identifying $D^{-1/2}R = K$, it is clear that $K$ has eigenvectors of $\mathcal{L}_{\text{rw}}$:
+\begin{equation}
+    LD^{-1/2} u_R = \lambda u_R \implies LD^{-1}u_K = \lambda u_K \implies D^{-1} L u_K = \lambda u_K
+\end{equation}
+\section{Probabalistic Interpretation}
+Consider a random walk on the graph with probabilities according to edge weights. The transition matrix is $
+D^{-1} \mathcal{L}$. Using Bayes' rule, 
+\begin{equation}
+    \text{Pr}(\bar{A}_i | A_i) = \text{NCut}(A_i, \bar{A}_i)
+\end{equation}
+And so we are minimizing the probability that a random walker jumps between clusters.
+
+\section{Perturbation Approach}
+Matrix perturbation theory studies the impact that a small matrix perturbation can have on eigenvalues and eigenvectors of a matrix. 
+
+For graphs which are perfectly separable into $k$ disconnected clusters, the Laplacian eigenvectors are exactly the indicator vectors for these clusters. We may view a generic Laplacian as a perturbed version of the idealized case to prove that generic Laplacian eigenvectors approximate proper indicator functions.
+
+\begin{theorem}{Paraphrased Davis-Kahan}
+ 
+Let $A' = A + \mathcal{E} \in \R^{n \times n}$ be a perturbation of the symmetric matrix $A$ by a symmetric matrix $\mathcal{E}$. Let $S \subset \R$ be an interval. Denote by $\sigma_{S}$ the set of eigenvalues of $A$ contained in $S$, and by $V$ the span of the corresponding eigenvectors. Define $S'$, $V'$ analogously for $A'$. 
+
+Define the distance between $S$ and the spectrum of $A$:
+\begin{equation}
+    \delta = \min\{ |\lambda - s | \ : \  \text{$\lambda$ eigenvalue of $A$, $\lambda \not \in S$, $s \in S$} \}
+\end{equation}
+Then the distance $d(V, V') = \|A - A'\|_F = \|\vec{\sigma}_A - \vec{\sigma}_{A'} \|_2$ satisfies:
+\begin{equation}
+    d(V, V') \leq \frac{\|\mathcal{E}\|_F}{\delta}
+\end{equation}
+\end{theorem}
+Identifying $\delta$ with the spectral gap, Davis-Kahan indicates that two cases when $\mathcal{L}$ clusters well are when the spectral gap is large and when $\mathcal{L}$ (in turn, $D$ and $W$) are close to that of an idealized cluster graph. 
+
+Davis-Kahan guarantees \textit{only} that the eigenvectors of $A'$ stay near $A$, under conditions. It is not sufficient to guarantee clustering unless the idealized version $A$ is good for clustering:
+\begin{enumerate}
+    \item Potential pitfall: any block diagonal matrix has ``indicator-like'' eigenvectors localized on the blocks
+    \item Also needed: eigenvalues induce an order of eigenvectors by relevance. (The first $k$ eigenvectors indicate the first $k$ clusters)
+    \item Also needed: in the idealized case, indicator components are bounded away from zero (they are either on or off). Otherwise, even a small amount of noise yields an ambiguous approximation.
+\end{enumerate}
+The second special property does not hold for $\mathcal{L}_{\text{sym}}$, whose eigenvectors are $D^{1/2} \mathds{1}_{A_i}$. Vertices with very low degree are nearly zeroed out. This is the reason for the row normalization step in $\mathcal{L}_{\text{sym}}$.
+\newpage
+\bibliography{citations}
+\end{document}
