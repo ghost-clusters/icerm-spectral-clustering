@@ -1,10 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from datasets import gaussian_mixture
-<<<<<<< HEAD
 import unittest
-=======
->>>>>>> d75c6661af438fed8812621e4bb337009355f5bb
 
 
 def kmeans(data, k, iters=100):
