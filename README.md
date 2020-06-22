@@ -6,6 +6,9 @@ Non-Euclidean metrics? Who ya gonna call?
 
 
 ### Organization of the Repository
+Some style guidelines:
+- All data matrices should use row vectors to represent data, so that rows index datapoints and columns index features
+- All lib scripts use lowercase titles
 ```
 environment.yml
 *.ipynb [For NBs under active development, they should live in the TLD]
