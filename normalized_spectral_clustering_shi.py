@@ -48,7 +48,7 @@ def gen_random_points(number, length):
 	#print(l)
 	return l 
 
-def laplacian_matrix(data):
+def laplacian_matrix(data, sim_stddev=1):
     similar = similarity_matrix(data)
     degree = np.zeros((len(data), len(data)))
     
@@ -62,11 +62,11 @@ def laplacian_matrix(data):
     # assert that rows sum up to one.
     return laplacian, degreeinv
 
-def similarity_matrix(data):
+def similarity_matrix(data, s=1):
 	similarity_matrix = np.zeros((len(data), len(data)))
 	for i in range(len(data)):
 		for j in range(len(data)):
-			similarity_matrix[i][j] = np.exp(-(np.linalg.norm(data[i] - data[j]**2)/2))
+			similarity_matrix[i][j] = np.exp(-(np.linalg.norm(data[i] - data[j]**2)/(2* s**2)))
 	return similarity_matrix
 
 def make_plot(data,assignment,k):
