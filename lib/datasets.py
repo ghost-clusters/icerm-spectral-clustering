@@ -3,7 +3,7 @@ import gzip
 import re
 import sys
 import numpy as np
-
+import pickle
 import matplotlib.pyplot as plt
 from networkx import nx
 
@@ -12,6 +12,20 @@ import unittest
 '''
 Examples copied from: https://networkx.github.io/documentation/stable/auto_examples/index.html#graph
 '''
+
+def load_wikipedia_wordvecs():
+    '''
+    Return GloVe word embeddings generated using an English Wikipedia dumb from February 2017.
+
+    Returns:
+        dict - A dictionary having keys 'words' and 'vecs' . Words is list of strings representing case-sensitive words.
+            Vecs is a (N x 300) Numpy matrix of word vectors, where N is roughly 300,000. Each word vector has 300 features.
+    '''
+    try:
+        with open("lib/data/GloVe_Wikipedia_Feb2017.pkl", "rb") as vecs:
+            return pickle.loads(vecs.read())
+    except FileNotFoundError:
+        raise Exception("Could not find data/GloVe_Wikipedia_Feb2017.pkl - this file is not in Github because it is too large. Have you manually downloaded it?")
 
 def load_karate_club():
     # small network graph from an anthropological study, see 

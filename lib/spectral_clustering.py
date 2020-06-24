@@ -97,7 +97,8 @@ class TestSpectralClustering(unittest.TestCase):
 
         c_u = spectral_clustering(X, 1, "u")
         c_rw = spectral_clustering(X, 1, "rw")
-        c_sym = spectral_clustering(X, 1, "sym")
+        c_sym = spectral_c
+        lustering(X, 1, "sym")
 
         self.assertTrue(c_u[0] == 0)
         self.assertTrue(c_rw[0] == 0)
