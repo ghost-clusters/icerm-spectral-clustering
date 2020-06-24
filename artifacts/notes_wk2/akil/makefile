@@ -1,7 +1,9 @@
 PROJECT=note
+PDFLATEX=pdflatex
+BIBTEX=bibtex
 
 .phony: all
 
 all: 
-	pdflatex $(PROJECT)
-	pdflatex $(PROJECT)
+	$(PDFLATEX) $(PROJECT)
+	$(PDFLATEX) $(PROJECT)
