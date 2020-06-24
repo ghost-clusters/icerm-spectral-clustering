@@ -15,6 +15,7 @@
 }
 \usepackage{blindtext}
 \usepackage{dsfont}
+\usepackage[dvipsnames]{xcolor}
 %++++++++++++++++++++++++++++++++++++++++
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{corollary}{Corollary}[theorem]
@@ -22,6 +23,8 @@
 \newcommand{\bb}[1]{\mathbb{#1}}
 \newcommand{\langlerangle}[1]{\langle{#1}\rangle}
 \newcommand{\linearoperator}[1]{\operatorname{\mathcal{L}}(#1)}
+
+\newcommand{\an}[1]{{\leavevmode\color{red}{#1}}}
 \begin{document}
 
 \title{Graph Spectral Clustering}
@@ -40,6 +43,7 @@ Let $v \in V, w \in W$. $T \in \linearoperator{V,W}$ can be identified with its 
 \begin{align}
     \langlerangle{Tv,w}=\langlerangle{v,T^{*}w}
 \end{align}
+\an{What is $V$? $W$? What does $\linearoperator{\cdot,\cdot}$ mean? What is $\left\langle \cdot, \cdot \right\rangle$?}
 
 \noindent
 \textbf{Self-Adjoint}
@@ -48,12 +52,13 @@ Let $v \in V, w \in W$. $T \in \linearoperator{V,W}$ can be identified with its 
 Let $v \in V, w \in W$. $T \in \linearoperator{V,W}$ is self-adjoint if $ T=T^*$
 
 
-\noindent The definition of adjoint extends to operators $T \in \linearoperator{V}$ and can be found with respect to an orthonormal basis by taking the conjugate transpose of the matrix representation of $T$. This often leads to an abuse of notation, where $^{*}$ is defined to be the conjugate transpose of a matrix. This way, we recognize that operators over real vector spaces are self-adjoint iff they are symmetric matrices. This motivates building undirected graphs as objects of study in data science. The following proofs and lemmas are geared to prove statements only about real vector spaces. To extend the spectral theorem to complex vector spaces, relax the condition on $T$ to being normal, and the spectral theorem results from the fact that every operator over a complex vector space has an eigenvalue.
+\noindent The definition of adjoint extends to operators $T \in \linearoperator{V}$ and can be found with respect to an orthonormal basis by taking the conjugate transpose of the matrix representation of $T$. \an{The previous sentence doesn't really make sense to me. ``can be found with respect to an orthonormal basis"?}This often leads to an abuse of notation, where $^{*}$ is defined to be the conjugate transpose of a matrix. This way, we recognize that operators over real vector spaces are self-adjoint iff they are symmetric matrices. This motivates building undirected graphs as objects of study in data science. \an{Well, you haven't motivated this yet; graphs have nothing to do with anything yet.} The following proofs and lemmas are geared to prove statements only about real vector spaces. To extend the spectral theorem to complex vector spaces, relax the condition on $T$ to being normal \an{(The complex-valued analogue of a real symmetric matrix is a normal one?}, and the spectral theorem results from the fact that every operator over a complex vector space has an eigenvalue.\an{I don't really think it follows form this fact.}
 \section{Real Spectral Theorem}
 \begin{theorem}
 Suppose $V$ is a finite-dimensional vector space taking scalars over the field 
 $\mathbb{R}$. Let $T$ $\in$ $\operatorname{\mathcal{L}}(V)$ be a linear operator. $T$ is a self-adjoint operator $\Longleftrightarrow$ $\exists$ an orthonormal basis of $V$ consisting of eigenvectors of $T$.
 \end{theorem}
+\an{Sure, though for symmetric matrices one often also notes that the eigenvalues are real. Also, $\Longleftrightarrow$ is not correct here. Just because $T$ is unitarily diagonalizable doesn't mean it's symmetric/self-adjoint.}
 
 \begin{proof}
 Begin by supposing that $\exists$ an orthonormal basis, $\mathcal{B}$, consisting of eigenvectors of $T$. Then we can diagonalize $T$ with respect to $\mathcal{B}$ by setting diagonal entries to be the eigenvalues of each basis vector $v_i$, where $i = 1, ..., n$ and $\operatorname{dim}(V) = n$, giving us the following matrix:
@@ -67,26 +72,28 @@ T_{\mathcal{B}} \doteq \Sigma =\begin{bmatrix}
     \end{bmatrix}
 \]
 
-This matrix representation of $T_{\mathcal{B}}$ is with respect to an orthonormal basis, so we can identify the adjoint $T_{\mathcal{B}}^{*}$ of $T_{\mathcal{B}}$ with the conjugate transpose of this matrix. Every eigenvalue is real and $T_{\mathcal{B}}$ is a diagonal matrix, thus $T_{\mathcal{B}} = T_{\mathcal{B}}^{*}$ and $T_{\mathcal{B}}$ is a self-adjoint operator.
+This matrix representation of $T_{\mathcal{B}}$ is with respect to an orthonormal basis, so we can identify the adjoint $T_{\mathcal{B}}^{*}$ of $T_{\mathcal{B}}$ with the conjugate transpose of this matrix. Every eigenvalue is real \an{(why?)} and $T_{\mathcal{B}}$ is a diagonal matrix, thus $T_{\mathcal{B}} = T_{\mathcal{B}}^{*}$ and $T_{\mathcal{B}}$ is a self-adjoint operator. \an{Ok, but the theorem statement has nothing to do with $T_{\mathcal{B}}$.}
 
 To prove the other direction of this equivalence is slightly trickier, and involves proving general properties of self-adjoint operators acting on real inner product spaces. We state these properties without proof here as a claim, and defer the proof to a subsequent lemma.
 
 \theoremstyle{remark}
 \begin{itemize}
-\item \textbf{Claim:} Self-adjoint operators have at least one eigenvalue.
+  \item \textbf{Claim:} Self-adjoint operators have at least one eigenvalue. \an{This is true for any matrix.}
 \end{itemize}
 
-Now suppose that $T$ is a self-adjoint operator over real vector space $V$. Then there exists at least one eigen vector-value pair ($u$, $\lambda$) associated to $T$. Note that $\lambda$ must be real, as we are working over a real vector space. Let $U = \operatorname{span}(u)$ be a 1-dimensional subspace of $V$ with a basis \{$u$\}.
+  Now suppose that $T$ is a self-adjoint operator over real vector space $V$. Then there exists at least one eigen vector-value pair ($u$, $\lambda$) associated to $T$. Note that $\lambda$ must be real, as we are working over a real vector space. \an{This is not true: $A = (0 1; -1 0)$ is real-valued but has complex spectrum.} Let $U = \operatorname{span}(u)$ be a 1-dimensional subspace of $V$ with a basis \{$u$\}.
 
-We complete the proof via induction on the dimension of $V$, $n$. Observe that $T|_{U}$ is a self-adjoint operator on U with an eigenbasis \{$u$\}, proving the base case for induction. To establish the inductive hypothesis, suppose that $W$, a vector space of dimension less than $n$, has an orthonormal basis consisting of eigenvectors of $T$. Consider the perpendicular complement of $U$, $U^{\perp}$, a subspace of $V$ with dimension $n-1$. By our inductive hypothesis, there is an orthonormal basis $\mathcal{B}_{U^{\perp}}$ of $U^{\perp}$ consisting of eigenvectors of $T|_{U^{\perp}}$. Observing that 
+  We complete the proof via induction on the dimension of $V$, $n$. Observe that $T|_{U}$ is a self-adjoint operator on U with an eigenbasis \{$u$\} \an{(you would need to prove this)}, proving the base case for induction. To establish the inductive hypothesis, suppose that $W$, a vector space of dimension less than $n$, has an orthonormal basis consisting of \an{(a subset of the?)} eigenvectors of $T$. Consider the perpendicular complement of $U$, $U^{\perp}$, a subspace of $V$ with dimension $n-1$. \an{? Why does $U^\perp$ have dimension $n-1$?} By our inductive hypothesis, there is an orthonormal basis $\mathcal{B}_{U^{\perp}}$ of $U^{\perp}$ consisting of eigenvectors of $T|_{U^{\perp}}$. Observing that 
 $\mathcal{B} = \mathcal{B}_{U^{\perp}} \cup \{u\}$ 
-is an orthonormal basis of $V$ consisting of eigenvectors of $T$ completes the proof of the Real Spectral Theorem.
+  is an orthonormal basis of $V$ \an{(again, you need to prove this)} consisting of eigenvectors of $T$ completes the proof of the Real Spectral Theorem.
 \end{proof}
 
 \begin{lemma}
 Self-adjoint operators over real inner product spaces have at least one eigenvalue.
 \end{lemma}
+\an{Again, the above is true for any matrix.}
 \begin{proof}
+  \an{This proof is sketchy to me; e.g., I don't get what $P$ is about, and I don't understand why irreducibility of real polynomial factors is relevant.}
 Recall that $\operatorname{\mathcal{L}}(V)$ is a vector space itself, so we can preserve the notion of exponentiation through repeated composition of an operator. Let $T \in \operatorname{\mathcal{L}}(V)$ be self-adjoint. Consider the set \{$v$, $Tv$,$\dots$,$T^{n}v$\}, a collection of $n+1$ linearly dependent vectors in $V$. Linear dependence permits the following equation of 0:
 \begin{align}
     0 &= c_0 v + c_1 Tv +\dots+ c_n T^{n}v\\
@@ -100,7 +107,7 @@ $P$ looks like a polynomial. We're also working over a real vector space, so we 
 \end{align}
 The first product are the irreducible factors of $P$ over $\mathbb{R}$. The irreducibility condition is enforced as $b_{i}^{2}<4c_{i}$ for every $i=1,\dots,k$. Applying an evaluation map of $T$ to $P$ results in the first product being an invertible operator constructed of invertible operators of the form $T^{2} + b_{i}T + c_{i}I$. Thus, all roots of $P$ must reside in the rightmost product, constructed of linear terms, exactly defining at least one eigenvalue of $T$.
 \end{proof}
-The previous lemma sufficiently proves the claim in the proof of Real Spectral Theorem. However the proof of the lemma itself made implicit two assumptions: we can freely associate a matrix $P$ with a polynomial over the same scalar field, and $P$ cannot have complex eigenvalues. To resolve the former, it suffices to recognize each row of $Pv$ as a polynomial of n variables, where each variable is an element of an orthonormal basis of $V$, so $P$ actually stores $n^{2}$ polynomials over the same scalar field. We resolve the latter and end this section with a neat proof about eigenvalues of self-adjoint operators.
+The previous lemma sufficiently proves the claim in the proof of Real Spectral Theorem. However the proof of the lemma itself made implicit two assumptions: we can freely associate a matrix $P$ with a polynomial over the same scalar field, and $P$ cannot have complex eigenvalues. To resolve the former, it suffices to recognize each row of $Pv$ as a polynomial of n variables \an{what variables?}, where each variable is an element of an orthonormal basis of $V$, so $P$ actually stores $n^{2}$ polynomials over the same scalar field. We resolve the latter and end this section with a neat proof about eigenvalues of self-adjoint operators.
 \begin{lemma}
 Eigenvalues of self-adjoint operators are real. 
 \end{lemma}
@@ -111,10 +118,11 @@ Let $T \in \operatorname{\mathcal{L}}(V)$ be a self-adjoint operator with eigen 
     \langlerangle{\lambda v,v}=\langlerangle{Tv,v}= \langlerangle{v,Tv} =
     \bar{\lambda}\langlerangle{v,v}
 \end{align}
+  \an{What if $\langle v, v \rangle = 0$?}
 \end{proof}
 
 \subsection*{So What?}
-Consider a symmetric matrix $T \in \linearoperator{V}$ with respect to the standard basis. Spectral Theorem says we can find a matrix $U \in \linearoperator{V}$ such that each column is a unit eigenvector of T, and $\operatorname{columns}(U)$ is an orthonormal basis of $V$. We can treat $U$ as a change of basis, rotating standard basis vectors to form an eigenbasis $\mathcal{B}_{T}$ of $V$. Now, the identity matrix
+Consider a symmetric matrix $T \in \linearoperator{V}$ with respect to the standard basis. Spectral Theorem says we can find a matrix $U \in \linearoperator{V}$ such that each column is a unit eigenvector of T, and $\operatorname{columns}(U)$ is an orthonormal basis of $V$. We can treat $U$ as a change of basis, rotating standard basis vectors to form an eigenbasis $\mathcal{B}_{T}$ of $V$.\an{What is an eigenbasis?} Now, the identity matrix
 \[
 I_U = U=
 \begin{bmatrix}
@@ -126,6 +134,7 @@ With $\Sigma$ as defined in 2.1, it's clear that matrix $I_U \Sigma$ is exactly 
 \begin{align}
     T = U\Sigma U^{*}
 \end{align}
+\an{You were talking about inverses but I don't see any above?}
 
 \section{Spectral Clustering}
 With the Spectral Theorem in hand, we can explore clustering methods in data analysis by creating a similarity graph of some data set, and investigate the effect of different quantifications of graph similarities on by constructing a matrix denoted the Graph Laplacian, $L$. The Laplacian matrix $L$ takes on many entries, as there exist many valid definitions of it, though the commonly used matrices oft make use of the adjacency matrix $W$ and degree matrix $D$ consequent of constructing the similarity graph.
@@ -136,12 +145,13 @@ With the Spectral Theorem in hand, we can explore clustering methods in data ana
 $\textbf{Definition}$ $L$ \textit{is a Laplacian matrix of a graph $G$ iff:}
 \begin{itemize}
     \item $L$ is symmetric and positive semi-definite
-    \item The smallest eigenvalue of $L$ is 0 (with eigenvector $\mathds{1}_v$ being the constant one vector with respect to an orthonormal basis).
-    \item If $G$ contains disconnected components $A_i$, then the eigenvalue 0 corresponds to the eigenvectors $\mathds{1}_{A_i}$
+    \item The smallest eigenvalue of $L$ is 0 (with eigenvector $\mathds{1}_v$ being the constant \an{``}one vector with respect to an orthonormal basis\an{"}?).
+    \item If $G$ contains disconnected components $A_i$, then the eigenvalue 0 corresponds to the eigenvectors $\mathds{1}_{A_i}$ \an{$A_i$ is a subset of vertices, so $\mathds{1}_{A_i}$ is a function over the set of vertices. How is it a vector?}
     \item $\forall f \in \mathbf{R}^{n}$,
     \begin{align}
         f^{*} L f = \frac{1}{2} \sum_{(i,j)=(1,1)}^{(n,n)} w_{ij} (f_i - f_j)^2
     \end{align}
+    \an{The better way to write these summation limits is $\sum_{1 \leq i, j \leq n}$, or $\sum_{i, j = 1}^n$.}
 \end{itemize}
 
 \noindent
@@ -165,12 +175,12 @@ We can describe the graph spectral clustering algorithms for all of three aforem
 Graph Spectral Clustering:
 \begin{enumerate}
 	\item Fix $k$ to be the number of clusters to apply.
-	\item Solve an eigenvalue problem to compute a rank-$k$ approximation of the laplacian matrix $U$.
-	\item Cluster along rows of $U$ through an algorithm like $k$-means.
+        \item Solve an eigenvalue problem to compute a rank-$k$ approximation of the laplacian matrix $U$. \an{$U$ is not a rank-$k$ approximation.}
+        \item Cluster along rows of $U$ through an algorithm like $k$-means. \an{You could more clearly describe what this is.}
 \end{enumerate}
 
 \noindent
-Why clusters generated by $k$-means works in step 3 is because the columns of $U$ are approximative of the indicator functions $\mathds{1}_{A_k}$, where each cluster is constructed as the span of these vectors, so clustering the rows of $U$ identify which data points are of a similar coordinate with respect to the eigenvectors. When using $L_{rw}$ it is important to note that $L_{rw}$ is no longer symmetric (because the normalization on $W$), so spectral theorem no longer applies, and we have to solve a generalized eigenvalue problem to recover the conditions to apply spectral theorem. The upshot is that the conditions are recovered by applying a change of basis, essentially mapping $V$ to $W\coloneqq D^{1/2}V$. The resulting laplacian from this change is exactly $L_{sym}$. So mathematically, there is no difference in the latter two uses of the Laplacian, but there are broader computational considerations to be made when deciding which route to proceed with.
+Why clusters generated by $k$-means works in step 3 is because the columns of $U$ are approximative of the indicator functions $\mathds{1}_{A_k}$, where each cluster is constructed as the span of these vectors, so clustering the rows of $U$ identify which data points are of a similar coordinate with respect to the eigenvectors. When using $L_{rw}$ it is important to note that $L_{rw}$ is no longer symmetric (because the normalization on $W$), so spectral theorem no longer applies, and we have to solve a generalized eigenvalue problem to recover the conditions to apply spectral theorem. \an{You haven't introduce any generalized eigenvalue problems.} The upshot is that the conditions are recovered by applying a change of basis, essentially mapping $V$ to $W\coloneqq D^{1/2}V$. The resulting laplacian from this change is exactly $L_{sym}$. \an{You should show this.} So mathematically, there is no difference in the latter two uses of the Laplacian, but there are broader computational considerations to be made when deciding which route to proceed with.
 
 \subsection*{Graph Cuts}
 A \textit{graph cut} is a partition of a the vertices set $V$ into disjoint sets $\{A_i\}$. Given some set of edge weights, there is a natural minimization problem that appears: Which graph cut of $G$ minimizes the sum weight of cut edges? Three objective functions are formulated below.
@@ -180,8 +190,9 @@ A \textit{graph cut} is a partition of a the vertices set $V$ into disjoint sets
     \text{RatioCut}(A_1, ..., A_k) & := \sum_{i=1}^k \frac{\text{cut}(A_i, \bar{A}_i)}{|A_i|} \\
     \text{NCut}(A_1, ..., A_k) & := \frac{1}{2} \sum_{i=1}^k \frac{\text{cut}(A_i, \bar{A}_i)}{\text{vol}(A_i)}
 \end{align}
+\an{The notation $W(\cdot,\cdot)$, $\mathrm{cut}(\cdot, \cdot)$, and $\mathrm{vol}(\cdot)$ are undefined.}
 
-After some involved algebra and induction on the number of clusters $k$, the discrete minimization problem can be represented as the following optimization setup:
+After some involved algebra and induction on the number of clusters $k$, \an{(you should show this involved algebra)} the discrete minimization problem can be represented as the following optimization setup:
 
 \begin{align}
    &\min_{A \subset V} \text{Tr}(H^T \mathcal{L} H) \text{ subject to $H^T H = I$}  
@@ -196,7 +207,7 @@ The optimization for NCut, when edges are weighted, follow a similar recipe to p
    &\min_{A \subset V} \text{Tr}(K^T \mathcal{L} K) \text{ subject to $K^T D K = I$}  
 \end{align}
 
-The subject of this minimization can be modified to an orthogonal matrix $R$, by identifying $K\coloneqq D^{-1/2}R$, and defining the square root of $D$ as $D^{1/2} = U \Sigma^{1/2} U^T$, where $U$ is the unitary horizontal stack of $k$ eigenvectors and $\Sigma$ is the diagonal of eigenvalues.
+The subject of this minimization can be modified to an orthogonal matrix $R$, by identifying $K\coloneqq D^{-1/2}R$, and defining the square root of $D$ as $D^{1/2} = U \Sigma^{1/2} U^T$, where $U$ is the unitary horizontal stack of $k$ eigenvectors and $\Sigma$ is the diagonal of eigenvalues. \an{I didn't get this explanation. And where does $R$ come from?}
 
 
 \end{document}
