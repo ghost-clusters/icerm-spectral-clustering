@@ -73,19 +73,22 @@ def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, 
     laplacian, degree = laplacian_matrix(data_sim)
 
     if(lform == "u"):
-        _, U = sp.linalg.eigh(laplacian, eigvals=(0, k-1))
+        S, U = sp.linalg.eigh(laplacian, eigvals=(0, k-1))
     elif(lform == "rw"):
-        _, U = sp.linalg.eigh(laplacian, b=np.diag(degree), eigvals=(0, k-1))
+        S, U = sp.linalg.eigh(laplacian, b=np.diag(degree), eigvals=(0, k-1))
     elif(lform == "sym"):
         dhalfinv = np.diag(np.sqrt(1 / degree))
         lsym = dhalfinv @ laplacian @ dhalfinv
-        _, U = sp.linalg.eigh(lsym, eigvals=(0, k-1)) 
+        S, U = sp.linalg.eigh(lsym, eigvals=(0, k-1)) 
         U = U / np.linalg.norm(U, axis=1).reshape((-1, 1)) # normalize rows
     else:
         raise ValueError("lform must be one of [u, rw, sym]")
-
+    
     centroids, assns = kmeans(U, k, iters=kmeans_iters)
-    return assns 
+    if(with_eigen):
+        return (assns, (S, U))
+    else:
+        return assns
 
 
 class TestSpectralClustering(unittest.TestCase):
