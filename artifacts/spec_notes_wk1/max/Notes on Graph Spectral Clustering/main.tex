@@ -33,6 +33,9 @@
 \author{Max Daniels\\ \texttt{daniels.g@northeastern.edu}} 
 \date{Northeastern University --- \today}
 
+\usepackage[dvipsnames]{xcolor}
+\newcommand{\an}[1]{{\leavevmode\color{red}{#1}}}
+
 %----------------------------------------------------------------------------------------
 
 \begin{document}
@@ -49,8 +52,9 @@ The columns of $U$ are \textit{eigenvectors} of A, and moreover, the associated 
 \end{theorem}
 
 \begin{proof}
-The eigenvectors of $A$ diagonalize $A$. It remains to show these eigenvectors are orthogonal and that the corresponding eigenvalues are real.
+  The eigenvectors of $A$ diagonalize $A$. \an{Why? There are non-diagonalizable matrices.} It remains to show these eigenvectors are orthogonal and that the corresponding eigenvalues are real.
 \end{proof}
+\an{I think this is an unusual way to write proofs...you should at least show logically how your results below are built into this assertion.}
 
 \begin{theorem}
 The eigenvalues of a real symmetric matrix $A \in \R^{n \times n}$ are real.
@@ -58,11 +62,11 @@ The eigenvalues of a real symmetric matrix $A \in \R^{n \times n}$ are real.
 \begin{proof}
 The characteristic polynomial of $A$ has real coefficients by construction. Hence by \eqref{lem:polyconj}, its eigenvalues must come in conjugate pairs: $P(z) = 0 \implies P(z^*) = 0$.
 
-Let $v$ be a nonzero eigenvector of $A$. By definition, $A = A^H$, so 
+  Let $v$ be a nonzero eigenvector of $A$ \an{(can there be zero eigenvectors?)}. By definition, $A = A^H$, so 
 \begin{equation}
     \lambda \norm{v}^2 = v^H A v = (v^H A v)^H = \lambda^* \norm{v}^2
 \end{equation}
-It follows that $\lambda = \lambda^*$ and so $\lambda \in \R$.
+  It follows that $\lambda = \lambda^*$ and so $\lambda \in \R$. \an{Why is Lemma \ref{lem:polyconj} relevant here?}
 \end{proof}
 
 \begin{theorem}
@@ -71,9 +75,9 @@ The eigenvectors of a real symmetric matrix $A \in \R^{n \times n}$ are orthogon
 \begin{proof}
 There are two cases:
 \begin{enumerate}
-    \item $u$, $v$ are independent eigenvectors sharing an eigenvalue. Then any linear combination of $u$, $v$ is another eigenvector. They may be orthogonalized with Graham Schmidt. 
+  \item $u$, $v$ are independent eigenvectors sharing an eigenvalue. Then any linear combination of $u$, $v$ is another eigenvector. They may be orthogonalized with Graham \an{Gram} Schmidt. 
     
-    \item $u$, $v$ are independent eigenvectors with eigenvalues $\lambda$, $\mu$ respectively. Suppose  $(u^T v) \not = 0$. Then,
+  \item $u$, $v$ are independent eigenvectors with eigenvalues $\lambda$, $\mu$ respectively \an{(Is it possible to choose linearly independent eigenvectors?)}. Suppose  $(u^T v) \not = 0$. \an{Do you mean $u^T$ or $u^H$ here?} Then,
     \begin{align}
         u^T A^T A v = \lambda^2 (u^T v) = \mu^2 (u^T v) = \lambda \mu (u^T v)
     \end{align}
@@ -82,10 +86,12 @@ There are two cases:
         \mu(\mu - \lambda) (u^T v) & = 0 \\
         \lambda(\mu - \lambda) (u^T v) & = 0
     \end{align}
-    By assumption, $(\mu - \lambda) (u^T v) \not = 0$, while $\mu = \lambda = 0$ is contradictory. It follows that $u^T v = 0$.
+    By assumption, $(\mu - \lambda) (u^T v) \not = 0$, while $\mu = \lambda = 0$ is contradictory \an{(you don't seem to have assumed anything that would contradict this)}. It follows that $u^T v = 0$.
+    \an{The above is a little too complicated. Just work on $u^T A v$.}
 \end{enumerate} 
 \end{proof}
 
+\an{Again, not sure why the lemma below is relevant.}
 \begin{lemma} \label{lem:polyconj}
 Let $P \in \R[x]$ be a polynomial with real coefficients. Then $(P(z))^* = P(z^*)$
 \end{lemma}
@@ -124,10 +130,11 @@ The Laplacian $\mathcal{L}$ satisfies:
 \begin{enumerate}
     \item By construction $\mathcal{L}$ is real and symmetric.
     \item Since $\langle f, \mathcal{L} f \rangle \geq 0$ for all $f \in \R^n$, $\mathcal{L}$ is positive semi-definite.
-    \item $\mathds{1}_V$ is an eigenvector with eigenvalue $0$. 
+    \item $\mathds{1}_V$ is an eigenvector with eigenvalue $0$. \an{$V$ is a set of vertices, so $\mathds{1}_V$ is a function over a graph. How is it also an eigenvector? Same comment for $\mathds{1}_A$ below.}
     \item If $A \subset V$ is disconnected from $\bar{A}$, then $\mathds{1}_A$ and $\mathds{1}_{\bar{A}}$ are eigenvectors with eigenvalues $0$. 
 \end{enumerate}
 \end{theorem}
+\an{I think most of the above are fairly straightforward, but proving at least 4 would be a nice thing to show....}
 \begin{rem}
 The last two properties hint at the connection between $0$ eigenvalues and minimal cuts between disconnected components of $G$. In both cases, the "objective value" is zero. We will see this relationship extends to min-cuts of non-zero cost.
 \end{rem}
@@ -169,7 +176,7 @@ Unnormalized Graph Spectral Clustering:
 \begin{enumerate}
     \item Fix $k$ the number of clusters
     \item Compute a rank-$k$ approximation of $\mathcal{L}$
-    \item These columns approximate the indicator functions for $k$ different (possibly overlapping) clusters. Apply $k$-means to the rows to group the points indicated to be in the same clusters. 
+    \item These columns approximate the indicator functions for $k$ different (possibly overlapping) clusters. Apply $k$-means to the rows to group the points indicated to be in the same clusters.  \an{What columns? You constructed a matrix above. What exactly are the ``columns'' you're referring to?}
 \end{enumerate}
 Normalized ($\mathcal{L}_{\text{rw}}$) Graph Spectral Clustering:
 \begin{enumerate}
@@ -193,6 +200,7 @@ RatioCut and NCut are \textit{graph cut problems}. A graph cut is a partition of
     \text{NCut}(A_1, ..., A_k) & := \sum_{i=1}^k \frac{\text{cut}(A_i, \bar{A}_i)}{|A_i|} \\
     \text{RatioCut}(A_1, ..., A_k) & := \frac{1}{2} \sum_{i=1}^k \frac{\text{cut}(A_i, \bar{A}_i)}{\text{vol}(A_i)}
 \end{align}
+\an{Use \texttt{\textbackslash coloneqq} and \texttt{\textbackslash eqqcolon} from the \texttt{mathtools} package.}
 
 In the simplest case ($k=2$ for cut), we can demonstrate the connection to $\mathcal{L}$. \\The trick:
 \begin{equation} \label{dfn:f}
@@ -220,13 +228,13 @@ Now, using this structure:
    &\min_{A \subset V} f^T \mathcal{L} f \text{ subject to $f \perp \mathds{1}$, $f_i$ as \eqref{dfn:f}, $\|f\|=\sqrt{n}$ }  \qquad &\text{[this is NP-Hard]} \\
    &\min_{A \subset V} f^T \mathcal{L} f \text{ subject to $f \perp \mathds{1}$, $\|f\|=\sqrt{n}$ }  \qquad &\text{[pay discreteness for feasibility]} 
 \end{align}
-Interestingly, $\mathds{1}$ is an eigenvector of $\mathcal{L}$, so by Rayleigh-Ritz this minimization asks for the second eigenvector.
+Interestingly, $\mathds{1}$ is an eigenvector of $\mathcal{L}$, so by Rayleigh-Ritz this minimization asks for the second eigenvector.\an{Maybe you should tell us what ``Rayleigh-Ritz'' is.}
 \subsubsection*{Extension of RatioCut for $k>2$}
 
 \begin{enumerate}
     \item Rather than $\pm c$ entries of $f$, we can use entries $c$ or $0$.
     \item This computes the cut cost for a single $A_i$, rather than the cut cost for $A_i$ and $\bar{A}_i$ at the same time.
-    \item So we simply compute the cost for each of the $h_i^T A_i h_i$, which can be done in a matrix.
+    \item So we simply compute the cost for each of the $h_i^T A_i h_i$, which can be done in a matrix. \an{Is $A_i$ a matrix?}
 \end{enumerate}
 Specifically:
 \begin{align} 
@@ -273,6 +281,7 @@ D^{-1} \mathcal{L}$. Using Bayes' rule,
 \begin{equation}
     \text{Pr}(\bar{A}_i | A_i) = \text{NCut}(A_i, \bar{A}_i)
 \end{equation}
+\an{I'm not sure what you intend $\mathrm{Pr}(\bar{A}_i | A_i)$ to mean. And anyway, you should show this property.}
 And so we are minimizing the probability that a random walker jumps between clusters.
 
 \section{Perturbation Approach}
@@ -294,6 +303,7 @@ Then the distance $d(V, V') = \|A - A'\|_F = \|\vec{\sigma}_A - \vec{\sigma}_{A'
 \end{equation}
 \end{theorem}
 Identifying $\delta$ with the spectral gap, Davis-Kahan indicates that two cases when $\mathcal{L}$ clusters well are when the spectral gap is large and when $\mathcal{L}$ (in turn, $D$ and $W$) are close to that of an idealized cluster graph. 
+\an{Can you articulate this by melding graph language with the linear algebraic characterization above?}
 
 Davis-Kahan guarantees \textit{only} that the eigenvectors of $A'$ stay near $A$, under conditions. It is not sufficient to guarantee clustering unless the idealized version $A$ is good for clustering:
 \begin{enumerate}
