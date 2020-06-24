@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from datasets import gaussian_mixture
+from .datasets import gaussian_mixture
 import unittest
 
 
@@ -54,5 +54,4 @@ class TestKMeans(unittest.TestCase):
 	
 		
 if __name__ == "__main__":
-	# TODO: @shubham, test me!
 	unittest.main()
