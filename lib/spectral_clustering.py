@@ -50,13 +50,17 @@ def laplacian_matrix(graph_weights):
     laplacian = np.diag(degree) - graph_weights
     return laplacian, degree
 
-def spectral_clustering(data, k, lform, kmeans_iters = 100, **kwargs):
+def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, **kwargs):
     '''
-    data: np.ndarray - (n,d) numpy array consisting of n d-valued points
-    k: integer - desired number of clusters
-    lform: one of ["u", "rw", "sym"] - use either the unnormalized, random walk, or symmetric Laplacian
-
-    @return np.ndarray - a list of (n,) integers of the cluster assignments of each data point
+    
+    Args:
+        data (np.ndarray): (n,d) numpy array consisting of n d-valued points
+        k (integer): desired number of clusters
+        lform (string): one of ["u", "rw", "sym"] - use either the unnormalized, random walk, or symmetric Laplacian
+        with_eigen (:obj:bool, optional) - if True, will also return a tuple (evalues, evecs) of the k Laplacian eigenpairs
+    
+    Returns:
+        A list of (n,) integers of the cluster assignments of each data point. If with_eigen=True, also returns eigenvalues and eigenvectors of the Laplacian.
     '''
         
     '''
