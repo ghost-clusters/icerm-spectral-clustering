@@ -26,9 +26,9 @@ def similarity_matrix(data, s=1, metric="g", kernel=None):
     similarity_matrix = np.zeros((n, n))
 
     if(metric == "g"):
-        kernel = lambda x, y, s : np.exp(- np.linalg.norm(data[i] - data[j]) ** 2 / (2 * s**2))
+        kernel = lambda x, y, s : np.exp(- np.linalg.norm(x - y) ** 2 / (2 * s**2))
     elif(metric == "e"):
-        kernel = lambda x, y, s : np.exp(- np.linalg.norm(data[i] - data[j]) / s)
+        kernel = lambda x, y, s : np.exp(- np.linalg.norm(x - y) / s)
     elif(metric == "k"):
         assert kernel is not None, "Must pass a kernel function to use kernelized similarity metric"
     else:
