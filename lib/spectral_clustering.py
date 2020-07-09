@@ -6,8 +6,9 @@ from scipy import linalg
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import unittest
+import lib.categorical_similarity_functions as csf
 
-def similarity_matrix(data, s=1, metric="g", kernel=None):
+def similarity_matrix(data, s=1, metric="g", kernel=None, numOfAtts=None):
     '''
     Compute a similarity matrix given a data matrix of size (n, d). Similarities can be computed with an optional metric
         which is specified by the `metric` argument.
@@ -25,17 +26,20 @@ def similarity_matrix(data, s=1, metric="g", kernel=None):
     n = len(data)
     similarity_matrix = np.zeros((n, n))
 
-    if(metric == "g"):
-        kernel = lambda x, y, s : np.exp(- np.linalg.norm(x - y) ** 2 / (2 * s**2))
-    elif(metric == "e"):
-        kernel = lambda x, y, s : np.exp(- np.linalg.norm(x - y) / s)
-    elif(metric == "k"):
-        assert kernel is not None, "Must pass a kernel function to use kernelized similarity metric"
-    else:
-        raise ValueError("Similarity metric must be one of [g, e, k]")
-    for i in range(n):
-        for j in range(n):
-            similarity_matrix[i][j] = kernel(data[i], data[j], s)
+    if(metric != "eskin"):
+        if(metric == "g"):
+            kernel = lambda x, y, s : np.exp(- np.linalg.norm(x - y) ** 2 / (2 * s**2))
+        elif(metric == "e"):
+            kernel = lambda x, y, s : np.exp(- np.linalg.norm(x - y) / s)
+        elif(metric == "k"):
+            assert kernel is not None, "Must pass a kernel function to use kernelized similarity metric"
+        else:
+            raise ValueError("Similarity metric must be one of [g, e, k]")
+        for i in range(n):
+            for j in range(n):
+                similarity_matrix[i][j] = kernel(data[i], data[j], s)
+    if(metric == "eskin"):
+        similarity_matrix = csf.eskin_similarity(numOfAtts,data)
     return similarity_matrix
 
 def laplacian_matrix(graph_weights):
@@ -50,7 +54,7 @@ def laplacian_matrix(graph_weights):
     laplacian = np.diag(degree) - graph_weights
     return laplacian, degree
 
-def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, **kwargs):
+def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, numOfAtts=None ,**kwargs):
     '''
     
     Args:
@@ -67,9 +71,10 @@ def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, 
     1. use a specialized algorithm to compute indicator vectors (part depending on lform)
     2. cluster the eigenvectors with k-means
     ''' 
-    n,d = data.shape
+    
 
-    data_sim = similarity_matrix(data, **kwargs)
+    data_sim = similarity_matrix(data, **kwargs, metric="eskin", numOfAtts = numOfAtts)
+    n,d = data_sim.shape
     laplacian, degree = laplacian_matrix(data_sim)
 
     if(lform == "u"):
@@ -97,8 +102,7 @@ class TestSpectralClustering(unittest.TestCase):
 
         c_u = spectral_clustering(X, 1, "u")
         c_rw = spectral_clustering(X, 1, "rw")
-        c_sym = spectral_c
-        lustering(X, 1, "sym")
+        c_sym = spectral_clustering(X, 1, "sym")
 
         self.assertTrue(c_u[0] == 0)
         self.assertTrue(c_rw[0] == 0)
@@ -112,3 +116,5 @@ class TestSpectralClustering(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
