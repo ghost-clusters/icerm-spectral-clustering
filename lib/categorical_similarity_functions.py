@@ -45,6 +45,31 @@ def eskin_similarity(numOfAtts,data):
     print("Please be a real thing: ", similarity_matrix)
     return similarity_matrix
 
+def fast_eskin_similarity(data):
+    '''
+    Compute an Eskin similarity matrix given categorial input data. 
+
+    data: np.ndarray - an (n, d) data array of n datapoints each with d features
+
+    @returns an (n, n) Eskin similarity matrix E, defined as E(i, j) = eskin_sim(data[i], data[j])
+    '''
+    n, d = data.shape
+    numOfAtts = np.array([len(np.unique(data[:, i])) for i in range(d)])
+    template = ( (numOfAtts**2)[:, None] / ( d * (numOfAtts**2 + 2) )[:, None] )
+    def vec_eskin(x, y):
+        r = np.copy(template)
+        r[x==y] = 1/n
+        return np.sum(r)
+    def vec_eskin_byidx(idx, jdx):
+        if(idx < jdx):
+            return vec_eskin(data[idx], data[jdx])
+        else:
+            return 0
+    u_vec_eskin_byidx = np.frompyfunc(vec_eskin_byidx, 2, 1, identity=None)
+    E = u_vec_eskin_byidx.outer(np.arange(n), np.arange(n))
+    return E + E.T + np.diag(np.ones((n,)))
+
+
 def shrink_eskin(similarity_matrix, k): #it drops connections so that the similarity matrix is that of k-nearest neighbors
     _,n = similarity_matrix.shape
     S = similarity_matrix
