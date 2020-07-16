@@ -45,6 +45,23 @@ def eskin_similarity(numOfAtts,data):
     print("Please be a real thing: ", similarity_matrix)
     return similarity_matrix
 
+def shrink_eskin(similarity_matrix, k): #it drops connections so that the similarity matrix is that of k-nearest neighbors
+    _,n = similarity_matrix.shape
+    S = similarity_matrix
+    for i in range(n):
+        max_ind = np.argpartition(S[i], k)
+        for j in range(n):
+            if (not j in max_ind):
+                S[i][j]=0
+    for i in range(n):
+        for j in range(n):
+            if not S[i][j] == S[j][i]:
+                S[i][j] = min(S[j][i],S[i][j])
+                S[j][i] = S[i][j]
+                
+    return S
+    
+            
 # testy test
 # listylist = [[1,2],[2,3],[4,5]]
 # categorical_preprocessing_csv(listylist)
