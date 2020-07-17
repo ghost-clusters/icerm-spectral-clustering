@@ -55,7 +55,7 @@ def laplacian_matrix(graph_weights):
     laplacian = np.diag(degree) - graph_weights
     return laplacian, degree
 
-def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, numOfAtts=None ,**kwargs):
+def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, numOfAtts=None, metric = None ,**kwargs):
     '''
     
     Args:
@@ -73,10 +73,14 @@ def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, 
     2. cluster the eigenvectors with k-means
     ''' 
     
-
-    data_sim = similarity_matrix(data, **kwargs, metric="eskin", numOfAtts = numOfAtts)
-    n,d = data_sim.shape
-    laplacian, degree = laplacian_matrix(data_sim)
+    if metric != "eskin":
+        data_sim = similarity_matrix(data, **kwargs, numOfAtts = numOfAtts)
+        n,d = data_sim.shape
+        laplacian, degree = laplacian_matrix(data_sim)
+    else:
+        data_sim = similarity_matrix(data, **kwargs, metric = "eskin", numOfAtts = numOfAtts)
+        n,d = data_sim.shape
+        laplacian, degree = laplacian_matrix(data_sim)
 
     if(lform == "u"):
         S, U = sp.linalg.eigh(laplacian, eigvals=(0, k-1))
