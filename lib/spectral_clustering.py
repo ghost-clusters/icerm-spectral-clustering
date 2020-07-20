@@ -39,8 +39,8 @@ def similarity_matrix(data, s=1, metric="g", kernel=None, numOfAtts=None):
             for j in range(n):
                 similarity_matrix[i][j] = kernel(data[i], data[j], s)
     if(metric == "eskin"):
-        similarity_matrix = csf.eskin_similarity(numOfAtts,data)
-        similarity_matrix = csf.shrink_eskin(similarity_matrix, 100) #to be modularized @max
+        similarity_matrix = csf.fast_eskin_similarity(numOfAtts,data)
+        #similarity_matrix = csf.shrink_eskin(similarity_matrix, 100) #to be modularized @max
     return similarity_matrix
 
 def laplacian_matrix(graph_weights):
