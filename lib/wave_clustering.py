@@ -26,7 +26,7 @@ def wave_clustering(data, k, T_max=1000, c=1.41, metric=None, kernel=None, **kwa
     data_sim = similarity_matrix(data, metric=metric, kernel=kernel, **kwargs)
     n, _ = data_sim.shape
     laplacian, degree = laplacian_matrix(data_sim)
-    rw_laplacian = (1/degree).reshape((-1, 1)) * laplacian
+    rw_laplacian = np.linalg.inv(deg) @ laplacian
 
     wave = np.zeros((n, T_max + 1))
 
