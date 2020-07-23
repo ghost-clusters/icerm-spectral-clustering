@@ -18,6 +18,7 @@ def similarity_matrix(data, s=1, metric="g", kernel=None, numOfAtts=None):
     metric: one of ["g", "e", "k"] - choose a metric for the data:
         "g" for Gaussian: d(x, y) = exp(-|x-y|^2 / 2 (s^2)). The scale `s` controls standard deviation. 
         "e" for Exponential: d(x, y) = exp(-|x-y|/s). The scale `s` is the parameter of the exponential.
+        "eps" for Epsilon neighbors: d(x, y) = |x-y| if less than epsilon, 0 otherwise
         "k" for Kernel: use an arbitrary kernel, given by the `kernel` argument.
     kernel: K(x, y, s) -> \R+ - an arbitrary distance function between two points of the same dimension with a given scale.
     
@@ -31,6 +32,10 @@ def similarity_matrix(data, s=1, metric="g", kernel=None, numOfAtts=None):
             kernel = lambda x, y, s : np.exp(- np.linalg.norm(x - y) ** 2 / (2 * s**2))
         elif(metric == "e"):
             kernel = lambda x, y, s : np.exp(- np.linalg.norm(x - y) / s)
+        elif(metric == "eps"):
+            def eps_threshold(x, eps):
+                return x if x < eps else 0
+            kernel = lambda x, y, s : eps_threshold(np.linalg.norm(x-y), s)
         elif(metric == "k"):
             assert kernel is not None, "Must pass a kernel function to use kernelized similarity metric"
         else:

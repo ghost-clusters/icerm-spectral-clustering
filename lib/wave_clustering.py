@@ -1,4 +1,4 @@
-from spectral_clustering import similarity_matrix, laplacian_matrix
+from .spectral_clustering import similarity_matrix, laplacian_matrix
 import numpy as np
 import scipy.signal
 
@@ -13,6 +13,7 @@ def wave_clustering(data, k, T_max=1000, c=1.41, metric=None, kernel=None, **kwa
         metric: one of ["g", "e", "k"] - choose a metric for the data:
             "g" for Gaussian: d(x, y) = exp(-|x-y|^2 / 2 (s^2)). The scale `s` controls standard deviation.
             "e" for Exponential: d(x, y) = exp(-|x-y|/s). The scale `s` is the parameter of the exponential.
+            "eps" for Epsilon neighbors: d(x, y) = |x-y| if less than epsilon, 0 otherwise
             "k" for Kernel: use an arbitrary kernel, given by the `kernel` argument.
         kernel: K(x, y, s) -> \R+ - an arbitrary distance function between two points of the same dimension with a given scale.
 
