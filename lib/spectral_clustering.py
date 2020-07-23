@@ -37,7 +37,10 @@ def similarity_matrix(data, s=1, metric="g", kernel=None, numOfAtts=None):
             raise ValueError("Similarity metric must be one of [g, e, k]")
         for i in range(n):
             for j in range(n):
-                similarity_matrix[i][j] = kernel(data[i], data[j], s)
+                if(i == j):
+                    similarity_matrix[i][j] = 0
+                else:
+                    similarity_matrix[i][j] = kernel(data[i], data[j], s)
     if(metric == "eskin"):
         similarity_matrix = csf.fast_eskin_similarity(numOfAtts,data)
         #similarity_matrix = csf.shrink_eskin(similarity_matrix, 100) #to be modularized @max
@@ -63,7 +66,10 @@ def spectral_clustering(data, k, lform, with_eigen = False, kmeans_iters = 100, 
         k (integer): desired number of clusters
         lform (string): one of ["u", "rw", "sym"] - use either the unnormalized, random walk, or symmetric Laplacian
         with_eigen (:obj:bool, optional) - if True, will also return a tuple (evalues, evecs) of the k Laplacian eigenpairs
-    
+        metric: one of ["g", "e", "k"] - choose a metric for the data:
+            "g" for Gaussian: d(x, y) = exp(-|x-y|^2 / 2 (s^2)). The scale `s` controls standard deviation.
+            "e" for Exponential: d(x, y) = exp(-|x-y|/s). The scale `s` is the parameter of the exponential.
+            "k" for Kernel: use an arbitrary kernel, given by the `kernel` argument.
     Returns:
         A list of (n,) integers of the cluster assignments of each data point. If with_eigen=True, also returns eigenvalues and eigenvectors of the Laplacian.
     '''
