@@ -78,16 +78,29 @@
 		<br />
 		<p>You can see our work in some of the following Jupyter notebooks:
 			<ul>
-				<li><a href="html/Evolving Eigenvectors under the Heat Equation.html">Evolving Eigenvectors under the Heat Equation</a>
-				<li><a href="html/Cumulative Eigenvector Clustering.html">Cumulative Eigenvector Clustering</a>
-				<li><a href="html/Random Walks Between Clusters.html">Random Walks Between Clusters</a>
-				<li><a href="html/Logistic Regression for Feature Selection.html">Logistic Regression for Feature Selection</a>
-				<li><a href="html/Mushroom_Clustering.html">Mushroom_Clustering</a>
-				<li><a href="html/Inverse Laplacian and the Heat Kernel.html">Inverse Laplacian and the Heat Kernel</a>
-				<li><a href="html/Clustering and Image Blurs.html">Clustering and Image Blurs</a>
-				<li><a href="html/1D Heat Diffusion on a Rod.html">1D Heat Diffusion on a Rod</a>
-				<li><a href="html/Hearing the Clusters of a Graph.html">Hearing the Clusters of a Graph</a>
-				<li><a href="html/GSC for Codenames.html">GSC for Codenames</a>
+				<li><p>We explored how graph spectral clustering works.  </p>
+				<ul>
+					<li><a href="html/Cumulative Eigenvector Clustering.html">Cumulative Eigenvector Clustering:</a> Graphs showing how eigenvectors help with picking out clusters and gives an example where GSC outperforms k-means. 				
+					<li><a href="html/Random Walks Between Clusters.html">Random Walks Between Clusters:</a> Simulation showing that a random walker on a graph with transition probabilities that proportional to the weight of an edge tends to stay within clusters and rarely jumps across clusters.
+				</ul>
+				
+				<li> <p>Since the graph Laplacian is intimately related to the Laplace operator, we decided to look at some partial differential equations that included the Laplace operator. The first equation we investigated was the heat equation. </p>
+				<ul>
+					<li><a href="html/Inverse Laplacian and the Heat Kernel.html">Inverse Laplacian and the Heat Kernel:</a> Connecting the Green's function of the heat equation with the gaussian similarity metric (solution to the heat equation) we choose to use in the Laplacian matrix. 
+					<li><a href="html/Evolving Eigenvectors under the Heat Equation.html">Evolving Eigenvectors under the Heat Equation:</a> Shows how the heat equation picks out the eigenvector corresponding to the smallest eigenvalue.
+					<li><a href="html/Clustering and Image Blurs.html">Clustering and Image Blurs:</a> Shows how heat diffusion relates to clustering sections of an image, in particular differentiating the foreground and background.
+				</ul>
+				
+				<li><p>The next PDE we investigated was the wave equation.</p>
+				<ul>
+					<li><a href="html/Hearing the Clusters of a Graph.html">Hearing the Clusters of a Graph:</a> Shows how evolving a graph with random initial conditions according to the wave equation could allow us to recover eigenvectors.
+				</ul>
+				
+				<li> <p>We also applied this algorithm on some real world datasets. </p>
+				<ul>
+					<li><a href="html/Mushroom_Clustering.html">Mushroom_Clustering:</a> Applied graph spectral clustering on a categorical dataset. 
+					<li><a href="html/GSC for Codenames.html">GSC for Codenames</a> Applied graph spectral clustering to a word vector embedding to use for popular board game Codenames.
+				</ul>
 			</ul>
 		</p>
 		</div>
